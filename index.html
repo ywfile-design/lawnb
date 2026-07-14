@@ -774,7 +774,7 @@ button { font-family: var(--sans); cursor: pointer; border: none; background: no
   display: flex; gap: 8px; font-size: 11.5px; color: rgba(255,255,255,0.85);
   padding: 3px 0; align-items: baseline;
 }
-.hd-row .k { color: var(--tr-dark-gold); font-weight: 700; flex-shrink: 0; width: 52px; }
+.hd-row .k { color: var(--tr-dark-gold); font-weight: 700; flex-shrink: 0; width: 62px; }
 .hd-rating { color: var(--tr-dark-gold); font-weight: 700; }
 .hd-btn {
   margin-top: 10px; background: var(--tr-white); color: var(--tr-green);
@@ -1192,6 +1192,313 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
 }
 
 
+/* ═══ 시험(퀴즈) 뷰 ═══ */
+.quiz-view {
+  display: none; flex-direction: column;
+  width: 100%; flex: 1; overflow-y: auto;
+  background: #f5f6f8; padding: 28px 32px; box-sizing: border-box; min-height: 0;
+}
+.quiz-view.active { display: flex; }
+
+/* 상단 탭 바 */
+.quiz-tab-bar {
+  display: flex; gap: 8px; margin-bottom: 22px; flex-shrink: 0;
+}
+.quiz-tab-btn {
+  padding: 8px 22px; border-radius: 6px; font-size: 13px; font-weight: 700;
+  font-family: var(--sans); border: none; cursor: pointer;
+  background: #fff; color: var(--gray-mid);
+  border: 1.5px solid var(--gray-line); transition: all .2s;
+}
+.quiz-tab-btn.active {
+  background: var(--tr-graphite); color: #fff; border-color: var(--tr-graphite);
+}
+
+/* 한 문제씩 뷰 */
+.quiz-single-wrap { flex: 1; display: flex; gap: 24px; }
+
+/* 문제 카드 */
+.quiz-card {
+  flex: 1; background: #fff; border-radius: 12px;
+  border: 1px solid var(--gray-line); padding: 32px 36px;
+  display: flex; flex-direction: column;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.quiz-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px; padding-bottom: 16px;
+  border-bottom: 1px solid var(--gray-line);
+}
+.quiz-num {
+  font-size: 26px; font-weight: 900; color: var(--tr-orange); line-height: 1;
+}
+.quiz-num-total { font-size: 14px; color: var(--gray-mid); font-weight: 400; }
+.quiz-meta { display: flex; align-items: center; gap: 10px; }
+.quiz-tag {
+  padding: 4px 12px; border-radius: 100px; font-size: 11.5px; font-weight: 700;
+  background: var(--tr-light-amber); color: var(--tr-dark-amber);
+}
+.quiz-score-tag {
+  padding: 4px 12px; border-radius: 100px; font-size: 11.5px; font-weight: 700;
+  background: var(--tr-light-teal); color: #2e8871;
+}
+.quiz-review-btn {
+  display: flex; align-items: center; gap: 5px;
+  padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 700;
+  background: #fff; color: var(--gray-mid); border: 1.5px solid var(--gray-line);
+  cursor: pointer; font-family: var(--sans); transition: all .2s;
+}
+.quiz-review-btn.marked { color: var(--tr-orange); border-color: var(--tr-orange); background: var(--tr-light-amber); }
+.quiz-review-btn i { font-size: 11px; }
+
+/* 문제 본문 */
+.quiz-question { font-size: 15px; line-height: 1.75; color: var(--tr-graphite); margin-bottom: 24px; font-weight: 500; }
+
+/* 보기 */
+.quiz-choices { display: flex; flex-direction: column; gap: 10px; margin-bottom: auto; }
+.quiz-choice {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px; border-radius: 8px;
+  border: 1.5px solid var(--gray-line); background: #fff;
+  cursor: pointer; font-size: 13.5px; color: var(--tr-graphite);
+  transition: border-color .15s, background .15s; font-family: var(--sans);
+}
+.quiz-choice:hover { border-color: var(--tr-orange); background: var(--tr-light-amber); }
+.quiz-choice.selected {
+  border-color: var(--tr-orange); background: var(--tr-light-amber); font-weight: 700;
+}
+.quiz-choice-num {
+  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+  border: 1.5px solid var(--gray-line); color: var(--gray-mid);
+  transition: all .15s;
+}
+.quiz-choice.selected .quiz-choice-num {
+  background: var(--tr-orange); border-color: var(--tr-orange); color: #fff;
+}
+
+/* 하단 네비게이션 */
+.quiz-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--gray-line);
+}
+.quiz-nav-center { font-size: 13px; color: var(--gray-mid); font-weight: 500; }
+.quiz-nav-center b { color: var(--tr-orange); }
+.quiz-prev-btn, .quiz-next-btn {
+  display: flex; align-items: center; gap: 7px;
+  padding: 11px 22px; border-radius: 7px; font-size: 13.5px; font-weight: 700;
+  font-family: var(--sans); border: none; cursor: pointer; transition: all .2s;
+}
+.quiz-prev-btn {
+  background: #fff; color: var(--tr-graphite);
+  border: 1.5px solid var(--gray-line);
+}
+.quiz-prev-btn:hover:not(:disabled) { border-color: var(--tr-graphite); }
+.quiz-prev-btn:disabled { opacity: .4; cursor: not-allowed; }
+.quiz-next-btn {
+  background: var(--tr-orange); color: #fff;
+}
+.quiz-next-btn:hover { background: #ee5a1a; }
+
+/* OMR 패널 */
+.quiz-omr {
+  width: 200px; flex-shrink: 0; background: #fff; border-radius: 12px;
+  border: 1px solid var(--gray-line); padding: 18px 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  display: flex; flex-direction: column; gap: 12px;
+  max-height: calc(100vh - 200px); overflow-y: auto;
+}
+.quiz-omr-title {
+  font-size: 14px; font-weight: 900; color: var(--tr-graphite);
+  padding-bottom: 12px; border-bottom: 1px solid var(--gray-line);
+}
+.quiz-omr-grid {
+  display: flex; flex-direction: column; gap: 4px;
+}
+.omr-cell {
+  display: flex; align-items: center; gap: 0;
+  padding: 7px 10px; border-radius: 6px;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  background: var(--gray-bg); color: var(--gray-mid);
+  border: 1.5px solid transparent; transition: all .15s; position: relative;
+  min-height: 32px;
+}
+.omr-cell:hover { background: var(--tr-light-amber); color: var(--tr-graphite); }
+.omr-cell .omr-num {
+  width: 36px; flex-shrink: 0; font-weight: 700; color: inherit;
+}
+.omr-cell .omr-divider {
+  width: 1px; height: 14px; background: var(--gray-line); margin: 0 8px; flex-shrink: 0;
+}
+.omr-cell .omr-ans {
+  font-size: 13px; font-weight: 700; color: inherit;
+  flex: 1; min-width: 0;
+}
+.omr-cell.answered  { background: var(--tr-light-amber); color: var(--tr-graphite); border-color: rgba(214,64,0,0.2); }
+.omr-cell.answered .omr-num  { color: var(--tr-orange); }
+.omr-cell.answered .omr-ans  { color: var(--tr-orange); }
+.omr-cell.answered .omr-divider { background: rgba(214,64,0,0.25); }
+.omr-cell.current   { border-color: var(--tr-orange); background: #fff; color: var(--tr-orange); box-shadow: 0 0 0 2px rgba(214,64,0,0.15); }
+.omr-cell.current .omr-num  { color: var(--tr-orange); font-weight: 900; }
+.omr-cell.current .omr-divider { background: rgba(214,64,0,0.3); }
+.omr-cell.review::after {
+  content: ''; position: absolute; top: 50%; right: 10px; transform: translateY(-50%);
+  width: 7px; height: 7px; border-radius: 50%; background: var(--tr-dark-amber);
+}
+.quiz-omr-legend { display: flex; flex-direction: column; gap: 6px; }
+.omr-legend-row {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 11.5px; color: var(--gray-mid);
+}
+.omr-legend-dot {
+  width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0;
+}
+.omr-legend-dot.answered { background: var(--tr-orange); }
+.omr-legend-dot.unanswered { background: var(--gray-bg); border: 1px solid var(--gray-line); }
+.omr-legend-dot.review { background: var(--tr-dark-amber); }
+.quiz-submit-btn {
+  width: 100%; height: 44px; background: var(--tr-orange); color: #fff;
+  border-radius: 7px; font-size: 14px; font-weight: 900;
+  font-family: var(--sans); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  transition: background .2s; margin-top: auto;
+}
+.quiz-submit-btn:hover { background: #ee5a1a; }
+
+/* 전체 보기 뷰 */
+.quiz-all-wrap { display: flex; flex-direction: column; gap: 18px; }
+.quiz-all-card {
+  background: #fff; border-radius: 10px;
+  border: 1px solid var(--gray-line); padding: 22px 26px;
+}
+.quiz-all-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+}
+.quiz-all-num { font-size: 18px; font-weight: 900; color: var(--tr-orange); }
+
+/* 결과 모달 */
+/* ── 시험 결과 페이지 ── */
+.quiz-result-page {
+  display: none; flex-direction: column; align-items: center; justify-content: center;
+  width: 100%; flex: 1; overflow-y: auto;
+  background: #f5f6f8; padding: 40px 32px; box-sizing: border-box; min-height: 0;
+}
+.quiz-result-page.active { display: flex; }
+
+/* 합격/불합격 뱃지 */
+.qr-verdict {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 24px; border-radius: 100px;
+  font-size: 15px; font-weight: 900; margin-bottom: 14px;
+}
+.qr-verdict.pass { background: var(--tr-light-teal); color: #2e8871; }
+.qr-verdict.fail { background: #fdecea; color: #c0392b; }
+
+.qr-title {
+  font-size: 24px; font-weight: 900; color: var(--tr-graphite);
+  text-align: center; margin-bottom: 6px; line-height: 1.4;
+}
+.qr-title .hl-pass { color: #2e8871; }
+.qr-title .hl-fail { color: #c0392b; }
+
+.qr-sub {
+  font-size: 13.5px; color: var(--gray-mid); text-align: center;
+  line-height: 1.8; margin-bottom: 32px;
+}
+
+/* 결과 카드 */
+.qr-card {
+  background: #fff; border: 1px solid var(--gray-line);
+  border-radius: 14px; width: 100%; max-width: 600px;
+  overflow: hidden; margin-bottom: 24px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+.qr-card-head {
+  padding: 16px 24px; font-size: 14px; font-weight: 900;
+  display: flex; align-items: center; gap: 8px;
+}
+.qr-card-head.pass { background: var(--tr-dark-teal); color: #fff; }
+.qr-card-head.pass i { color: var(--tr-dark-gold); }
+.qr-card-head.fail { background: #c0392b; color: #fff; }
+.qr-card-head.fail i { color: #f8c0b8; }
+.qr-card-body { padding: 24px; }
+
+/* 점수 큰 표시 */
+.qr-score-row {
+  display: flex; align-items: baseline; justify-content: center;
+  gap: 6px; margin-bottom: 20px;
+}
+.qr-score-num { font-size: 60px; font-weight: 900; line-height: 1; }
+.qr-score-num.pass { color: #2e8871; }
+.qr-score-num.fail { color: #c0392b; }
+.qr-score-max { font-size: 22px; color: var(--gray-mid); font-weight: 400; }
+
+/* 통계 행들 */
+.qr-stat-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  margin-bottom: 20px;
+}
+.qr-stat-item {
+  background: var(--gray-bg); border-radius: 10px;
+  padding: 16px; text-align: center;
+}
+.qr-stat-label { font-size: 12px; color: var(--gray-mid); font-weight: 500; margin-bottom: 6px; }
+.qr-stat-value { font-size: 20px; font-weight: 900; color: var(--tr-graphite); }
+.qr-stat-value .unit { font-size: 13px; font-weight: 400; color: var(--gray-mid); }
+
+/* 합격선 바 */
+.qr-bar-wrap { margin-bottom: 6px; }
+.qr-bar-label {
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: var(--gray-mid); margin-bottom: 6px;
+}
+.qr-bar-track {
+  height: 10px; background: var(--gray-line); border-radius: 100px; overflow: visible;
+  position: relative;
+}
+.qr-bar-fill {
+  height: 100%; border-radius: 100px; transition: width .8s ease;
+}
+.qr-bar-fill.pass { background: #2e8871; }
+.qr-bar-fill.fail { background: #c0392b; }
+.qr-bar-threshold {
+  position: absolute; top: -4px; height: 18px; width: 2px;
+  background: var(--tr-dark-amber); border-radius: 1px;
+}
+.qr-bar-threshold-label {
+  position: absolute; top: -22px; transform: translateX(-50%);
+  font-size: 10px; color: var(--tr-dark-amber); font-weight: 700; white-space: nowrap;
+}
+
+/* 액션 버튼 */
+.qr-actions {
+  display: flex; gap: 12px; width: 100%; max-width: 600px; flex-wrap: wrap;
+}
+.qr-retry-btn {
+  flex: 1; height: 50px; background: var(--tr-green); color: #fff;
+  border-radius: 8px; font-size: 15px; font-weight: 900;
+  font-family: var(--sans); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: background .2s;
+}
+.qr-retry-btn:hover { background: #0e2410; }
+.qr-back-btn {
+  flex: 1; height: 50px; background: #fff; color: var(--tr-graphite);
+  border: 1.5px solid var(--gray-line); border-radius: 8px;
+  font-size: 15px; font-weight: 600; font-family: var(--sans);
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: border-color .2s, color .2s;
+}
+.qr-back-btn:hover { border-color: var(--tr-graphite); color: var(--tr-graphite); }
+
+/* 반응형 */
+@media (max-width: 860px) {
+  .quiz-omr { display: none; }
+  .quiz-view { padding: 16px; }
+  .quiz-card { padding: 20px; }
+}
+
 /* ═══ 강사소개 (프로필 카드형) ═══ */
 #page-detail .prof-card {
   background: var(--gray-bg); border-radius: 16px; padding: 34px 38px;
@@ -1568,6 +1875,119 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
 }
 .info-save-btn:hover { background: #ee5a1a; transform: translateY(-1px); }
 .info-save-btn i { font-size: 13px; }
+
+/* 회원탈퇴 버튼 (회원정보수정 하단) */
+.info-withdraw-btn {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  width: 100%; max-width: 640px; height: 46px;
+  background: none; border: 1.5px solid var(--gray-line);
+  border-radius: 7px; font-size: 13.5px; font-weight: 600;
+  color: var(--gray-mid); font-family: var(--sans);
+  cursor: pointer; margin-top: 10px;
+  transition: border-color .2s, color .2s;
+}
+.info-withdraw-btn:hover { border-color: #c0392b; color: #c0392b; }
+
+/* ── 회원탈퇴 공통 레이아웃 ── */
+#page-withdraw-pw, #page-withdraw-confirm, #page-withdraw-done {
+  display: none; min-height: 60vh; background: var(--gray-bg);
+}
+.withdraw-wrap {
+  max-width: 560px; margin: 0 auto; padding: 60px 32px 100px;
+  display: flex; flex-direction: column; align-items: center;
+}
+.withdraw-icon {
+  width: 76px; height: 76px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; margin-bottom: 24px;
+}
+.withdraw-icon.warn { background: #fdecea; color: #c0392b; }
+.withdraw-icon.info { background: var(--tr-light-gold); color: var(--tr-dark-amber); }
+.withdraw-icon.done { background: var(--tr-light-teal); color: var(--tr-dark-teal); }
+.withdraw-title {
+  font-size: 22px; font-weight: 900; color: var(--tr-graphite);
+  text-align: center; margin-bottom: 8px; line-height: 1.4;
+}
+.withdraw-title .hl { color: #c0392b; }
+.withdraw-sub {
+  font-size: 13.5px; color: var(--gray-mid); text-align: center;
+  line-height: 1.8; margin-bottom: 30px;
+}
+.withdraw-box {
+  background: var(--tr-white); border: 1px solid var(--gray-line);
+  border-radius: 12px; padding: 28px; width: 100%; margin-bottom: 20px;
+}
+.withdraw-box .wd-label {
+  font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--tr-graphite);
+  display: block;
+}
+.withdraw-pw-wrap { position: relative; }
+.withdraw-pw-input {
+  width: 100%; height: 48px; border: 1.5px solid var(--gray-line);
+  border-radius: 7px; padding: 0 46px 0 14px;
+  font-size: 14px; font-family: var(--sans); outline: none;
+  color: var(--tr-graphite); transition: border-color .2s; box-sizing: border-box;
+}
+.withdraw-pw-input:focus { border-color: var(--tr-orange); }
+.withdraw-pw-toggle {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer;
+  color: var(--gray-mid); font-size: 14px; padding: 4px;
+}
+.withdraw-pw-msg { font-size: 12px; color: #c0392b; min-height: 18px; margin-top: 6px; }
+.withdraw-confirm-btn {
+  width: 100%; height: 50px; background: var(--tr-orange); color: #fff;
+  border-radius: 8px; font-size: 15px; font-weight: 900;
+  font-family: var(--sans); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: background .2s; margin-top: 4px;
+}
+.withdraw-confirm-btn:hover { background: #ee5a1a; }
+.withdraw-notice-box {
+  background: var(--tr-white); border: 1.5px solid #f5c6c6;
+  border-radius: 12px; padding: 24px 26px; width: 100%; margin-bottom: 28px;
+}
+.withdraw-notice-title {
+  font-size: 14px; font-weight: 900; color: #c0392b;
+  margin-bottom: 14px; display: flex; align-items: center; gap: 7px;
+}
+.withdraw-notice-list { list-style: none; padding: 0; margin: 0; }
+.withdraw-notice-list li {
+  font-size: 13px; line-height: 1.85; color: var(--tr-graphite);
+  padding: 8px 0 8px 18px; position: relative;
+  border-bottom: 1px solid var(--gray-line);
+}
+.withdraw-notice-list li:last-child { border-bottom: none; }
+.withdraw-notice-list li::before {
+  content: ''; position: absolute; left: 4px; top: 16px;
+  width: 5px; height: 5px; border-radius: 50%; background: #c0392b;
+}
+.withdraw-notice-list li b { color: #c0392b; }
+.withdraw-action-row { display: flex; gap: 12px; width: 100%; }
+.withdraw-do-btn {
+  flex: 1; height: 50px; background: #c0392b; color: #fff;
+  border-radius: 8px; font-size: 15px; font-weight: 900;
+  font-family: var(--sans); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: background .2s;
+}
+.withdraw-do-btn:hover { background: #a93226; }
+.withdraw-cancel-btn {
+  flex: 1; height: 50px; background: var(--tr-white); color: var(--tr-graphite);
+  border: 1.5px solid var(--gray-line); border-radius: 8px;
+  font-size: 15px; font-weight: 600; font-family: var(--sans);
+  cursor: pointer; transition: border-color .2s, color .2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.withdraw-cancel-btn:hover { border-color: var(--tr-green); color: var(--tr-green); }
+.withdraw-done-btn {
+  height: 50px; padding: 0 48px; background: var(--tr-green); color: #fff;
+  border-radius: 8px; font-size: 15px; font-weight: 900;
+  font-family: var(--sans); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: background .2s;
+}
+.withdraw-done-btn:hover { background: #0e2410; }
 
 /* 찜과정 */
 .wish-empty { text-align: center; padding: 60px 0; color: var(--gray-mid); font-size: 13.5px; }
@@ -2116,6 +2536,31 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
 
 /* sticky-cta는 fixed 요소이므로 전역 유지 */
 
+/* ═══ 찜과정 일괄 수강신청 페이지 추가 스타일 ═══ */
+#page-enroll-wish { min-height: 70vh; background: var(--gray-bg); }
+.wish-course-list { display: flex; flex-direction: column; gap: 12px; }
+.wish-enroll-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 0; border-bottom: 1px solid var(--gray-line);
+}
+.wish-enroll-item:last-child { border-bottom: none; }
+.wish-enroll-thumb {
+  width: 48px; height: 48px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 20px;
+}
+.wish-enroll-info { flex: 1; min-width: 0; }
+.wish-enroll-cat  { font-size: 11px; color: var(--tr-orange); font-weight: 700; margin-bottom: 3px; }
+.wish-enroll-title { font-size: 13.5px; font-weight: 700; line-height: 1.4; }
+.wish-enroll-period { font-size: 12px; color: var(--gray-mid); margin-top: 3px; }
+.wish-enroll-price { font-size: 15px; font-weight: 900; flex-shrink: 0; }
+.wish-enroll-total-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 14px 0 0; border-top: 2px solid var(--tr-graphite); margin-top: 6px;
+}
+.wish-enroll-total-row .k { font-size: 14px; font-weight: 700; }
+.wish-enroll-total-row .v { font-size: 22px; font-weight: 900; color: var(--tr-orange); }
+.wish-enroll-total-row .won { font-size: 13px; font-weight: 400; }
+
 /* ═══════════════════════════════════════════
    수강신청 페이지 (page-enroll)
 ═══════════════════════════════════════════ */
@@ -2237,7 +2682,7 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
 
 /* 결제 방법 */
 .pay-methods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-@media (max-width: 540px) { .pay-methods { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .pay-methods { grid-template-columns: 1fr 1fr 1fr; } }
 .pay-method-card {
   border: 2px solid var(--gray-line); border-radius: 10px;
   padding: 16px 12px; text-align: center; cursor: pointer;
@@ -2701,10 +3146,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-            <div class="hd-row"><span class="k">난이도</span>중급</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.9</span>&nbsp;후기 214건</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 24강 · 18시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 30일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 + 샘플 40종</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -2728,10 +3173,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-            <div class="hd-row"><span class="k">난이도</span>기본</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.8</span>&nbsp;후기 187건</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 18강 · 12시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 60일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 + 체크리스트</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -2755,10 +3200,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>오프라인 (역삼)</div>
-            <div class="hd-row"><span class="k">교육일정</span>7/17 ~ 7/18</div>
-            <div class="hd-row"><span class="k">난이도</span>심화</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.9</span>&nbsp;후기 96건</div>
+            <div class="hd-row"><span class="k">학습시간</span>2일 · 총 16시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>7/17 ~ 7/18 (집합)</div>
+            <div class="hd-row"><span class="k">수료기준</span>출석률 90% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>교재 + 실전 판례집</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -2783,10 +3228,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-            <div class="hd-row"><span class="k">난이도</span>중급 · Part 1</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.7</span>&nbsp;후기 152건</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 30강 · 22시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 90일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 + 워크북</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -2827,10 +3272,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
           <span class="days-badge">60일 수강</span>
           <div class="card-icons"><button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button></div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-            <div class="hd-row"><span class="k">난이도</span>중급</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.9</span>&nbsp;후기 214건</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 20강 · 15시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 60일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 + 계약서 템플릿</div>
             <a href="#" class="hd-btn" onclick="showDetail();return false;">상세보기</a>
           </div>
         </div>
@@ -2860,10 +3305,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
           <span class="days-badge">45일 수강</span>
           <div class="card-icons"><button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button></div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-            <div class="hd-row"><span class="k">난이도</span>기본</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.8</span>&nbsp;후기 93건</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 15강 · 10시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 45일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 + 대응 체크리스트</div>
             <a href="#" class="hd-btn" onclick="showDetail();return false;">상세보기</a>
           </div>
         </div>
@@ -2893,10 +3338,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
           <span class="days-badge">오프라인 2일</span>
           <div class="card-icons"><button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button></div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>집합교육 (오프라인)</div>
-            <div class="hd-row"><span class="k">교육일정</span>8/5 ~ 8/6</div>
-            <div class="hd-row"><span class="k">난이도</span>심화</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.9</span>&nbsp;후기 71건</div>
+            <div class="hd-row"><span class="k">학습시간</span>2일 · 총 14시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>8/5 ~ 8/6 (집합)</div>
+            <div class="hd-row"><span class="k">수료기준</span>출석률 90% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>교재 + 소장 작성 워크시트</div>
             <a href="#" class="hd-btn" onclick="showDetail();return false;">상세보기</a>
           </div>
         </div>
@@ -2926,10 +3371,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
           <span class="days-badge">30일 수강</span>
           <div class="card-icons"><button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button></div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-            <div class="hd-row"><span class="k">난이도</span>기본</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.7</span>&nbsp;후기 58건</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 12강 · 8시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 30일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 + 공시 가이드</div>
             <a href="#" class="hd-btn" onclick="showDetail();return false;">상세보기</a>
           </div>
         </div>
@@ -2980,10 +3425,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>7/10 개강</div>
-            <div class="hd-row"><span class="k">난이도</span>기본</div>
-            <div class="hd-row"><span class="k">카테고리</span>ESG &gt; 공시·실사</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 10강 · 7시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 30일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 제공</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -3007,10 +3452,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>7/14 개강</div>
-            <div class="hd-row"><span class="k">난이도</span>중급</div>
-            <div class="hd-row"><span class="k">카테고리</span>컴플라이언스</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 14강 · 10시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 45일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 + 실무 매뉴얼</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -3034,10 +3479,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>오프라인 (역삼)</div>
-            <div class="hd-row"><span class="k">교육일정</span>7/22 ~ 7/24</div>
-            <div class="hd-row"><span class="k">난이도</span>심화</div>
-            <div class="hd-row"><span class="k">카테고리</span>국제법 &gt; 통상</div>
+            <div class="hd-row"><span class="k">학습시간</span>3일 · 총 21시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>7/22 ~ 7/24 (집합)</div>
+            <div class="hd-row"><span class="k">수료기준</span>출석률 90% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>교재 + 협정문 자료집</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -3062,10 +3507,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>7/28 개강</div>
-            <div class="hd-row"><span class="k">난이도</span>기본</div>
-            <div class="hd-row"><span class="k">카테고리</span>부동산 · 건설</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 12강 · 9시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 30일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 제공</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -3526,10 +3971,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-            <div class="hd-row"><span class="k">난이도</span>중급</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.9</span>&nbsp;후기 214건</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 24강 · 18시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 30일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 + 샘플 40종</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -3553,10 +3998,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-            <div class="hd-row"><span class="k">난이도</span>기본</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.8</span>&nbsp;후기 187건</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 18강 · 12시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 60일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 + 체크리스트</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -3580,10 +4025,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>오프라인 (역삼)</div>
-            <div class="hd-row"><span class="k">교육일정</span>7/17 ~ 7/18</div>
-            <div class="hd-row"><span class="k">난이도</span>심화</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.9</span>&nbsp;후기 96건</div>
+            <div class="hd-row"><span class="k">학습시간</span>2일 · 총 16시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>7/17 ~ 7/18 (집합)</div>
+            <div class="hd-row"><span class="k">수료기준</span>출석률 90% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>교재 + 실전 판례집</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -3608,10 +4053,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-            <div class="hd-row"><span class="k">난이도</span>중급 · Part 1</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.7</span>&nbsp;후기 152건</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 30강 · 22시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 90일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 + 워크북</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -3634,10 +4079,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>7/10 개강</div>
-            <div class="hd-row"><span class="k">난이도</span>기본</div>
-            <div class="hd-row"><span class="k">카테고리</span>ESG &gt; 공시·실사</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 10강 · 7시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 30일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 제공</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -3661,10 +4106,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>7/14 개강</div>
-            <div class="hd-row"><span class="k">난이도</span>중급</div>
-            <div class="hd-row"><span class="k">카테고리</span>컴플라이언스</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 14강 · 10시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 45일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 + 실무 매뉴얼</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -3688,10 +4133,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>오프라인 (역삼)</div>
-            <div class="hd-row"><span class="k">교육일정</span>7/22 ~ 7/24</div>
-            <div class="hd-row"><span class="k">난이도</span>심화</div>
-            <div class="hd-row"><span class="k">카테고리</span>국제법 &gt; 통상</div>
+            <div class="hd-row"><span class="k">학습시간</span>3일 · 총 21시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>7/22 ~ 7/24 (집합)</div>
+            <div class="hd-row"><span class="k">수료기준</span>출석률 90% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>교재 + 협정문 자료집</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -3716,10 +4161,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>7/28 개강</div>
-            <div class="hd-row"><span class="k">난이도</span>기본</div>
-            <div class="hd-row"><span class="k">카테고리</span>부동산 · 건설</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 12강 · 9시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 30일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 제공</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -3741,10 +4186,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-            <div class="hd-row"><span class="k">난이도</span>중급</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.7</span>&nbsp;후기 88건</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 16강 · 11시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 45일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 제공</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -3766,10 +4211,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-            <div class="hd-row"><span class="k">난이도</span>기본</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.6</span>&nbsp;후기 61건</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 14강 · 10시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 30일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 + 규제해설서</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -3791,10 +4236,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>오프라인 (역삼)</div>
-            <div class="hd-row"><span class="k">교육일정</span>8/6 ~ 8/7</div>
-            <div class="hd-row"><span class="k">난이도</span>심화</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.8</span>&nbsp;후기 74건</div>
+            <div class="hd-row"><span class="k">학습시간</span>2일 · 총 14시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>8/6 ~ 8/7 (집합)</div>
+            <div class="hd-row"><span class="k">수료기준</span>출석률 90% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>교재 + 실전 자료집</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -3816,10 +4261,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-            <div class="hd-row"><span class="k">난이도</span>중급</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.7</span>&nbsp;후기 93건</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 18강 · 13시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 60일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 제공</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -3841,10 +4286,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-            <div class="hd-row"><span class="k">난이도</span>중급</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.8</span>&nbsp;후기 112건</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 20강 · 15시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 60일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 + 워크북</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -3866,10 +4311,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>오프라인 (역삼)</div>
-            <div class="hd-row"><span class="k">교육일정</span>8/20</div>
-            <div class="hd-row"><span class="k">난이도</span>기본</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.9</span>&nbsp;후기 135건</div>
+            <div class="hd-row"><span class="k">학습시간</span>1일 · 총 7시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>8/20 (집합 1일)</div>
+            <div class="hd-row"><span class="k">수료기준</span>출석률 90% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>교재 현장 배포</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -3891,10 +4336,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-            <div class="hd-row"><span class="k">난이도</span>심화</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.6</span>&nbsp;후기 47건</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 22강 · 16시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 90일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 + 판례집</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -3916,10 +4361,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-            <div class="hd-row"><span class="k">난이도</span>기본</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.5</span>&nbsp;후기 38건</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 10강 · 7시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 30일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 제공</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -3941,10 +4386,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-            <div class="hd-row"><span class="k">난이도</span>심화</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.8</span>&nbsp;후기 76건</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 28강 · 20시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 90일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 + 워크북</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -3966,10 +4411,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>오프라인 (역삼)</div>
-            <div class="hd-row"><span class="k">교육일정</span>9/2 ~ 9/4</div>
-            <div class="hd-row"><span class="k">난이도</span>심화</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.9</span>&nbsp;후기 52건</div>
+            <div class="hd-row"><span class="k">학습시간</span>3일 · 총 21시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>9/2 ~ 9/4 (집합)</div>
+            <div class="hd-row"><span class="k">수료기준</span>출석률 90% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>교재 + SPA 계약서 샘플</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -3991,10 +4436,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-            <div class="hd-row"><span class="k">난이도</span>중급</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.6</span>&nbsp;후기 44건</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 16강 · 12시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 60일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 제공</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -4016,10 +4461,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-            <div class="hd-row"><span class="k">난이도</span>중급</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.7</span>&nbsp;후기 129건</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 18강 · 13시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 45일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 + 가이드북</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -4041,10 +4486,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-            <div class="hd-row"><span class="k">난이도</span>심화</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.9</span>&nbsp;후기 158건</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 26강 · 19시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 90일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 + 판례 해설서</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -4066,10 +4511,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-            <div class="hd-row"><span class="k">난이도</span>심화</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.8</span>&nbsp;후기 67건</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 20강 · 14시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 60일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 제공</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -4091,10 +4536,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-            <div class="hd-row"><span class="k">난이도</span>중급</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.7</span>&nbsp;후기 83건</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 14강 · 10시간</div>
+            <div class="hd-row"><span class="k">수강기간</span>결제일로부터 45일</div>
+            <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 + 실무노트</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -4116,10 +4561,10 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
           </div>
           <div class="hover-detail">
-            <div class="hd-row"><span class="k">학습유형</span>온라인+오프라인</div>
-            <div class="hd-row"><span class="k">교육일정</span>수시 모집</div>
-            <div class="hd-row"><span class="k">난이도</span>기본</div>
-            <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.9</span>&nbsp;후기 29건</div>
+            <div class="hd-row"><span class="k">학습시간</span>총 12강 + 실습 2일</div>
+            <div class="hd-row"><span class="k">수강기간</span>온라인 60일 + 집합 2일</div>
+            <div class="hd-row"><span class="k">수료기준</span>온라인 80% + 출석 100%</div>
+            <div class="hd-row"><span class="k">교재정보</span>전자교재 + 실습 키트</div>
             <a href="course-detail.html" class="hd-btn">상세보기</a>
           </div>
         </div>
@@ -4258,13 +4703,8 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
           </div>
           <div class="info-section-body">
             <div class="info-field">
-              <div class="info-field-label">
-                아이디
-                <span class="info-badge-linked"><i class="fas fa-link"></i>통합회원 연동</span>
-                <span class="info-badge-ro">수정불가</span>
-              </div>
+              <div class="info-field-label">아이디</div>
               <input type="text" class="info-input" value="lawnb_hong123" readonly />
-              <p class="info-hint">톰슨로이터 통합회원(lawnb.com) 아이디로 연동되어 있습니다.</p>
             </div>
           </div>
         </div>
@@ -4312,6 +4752,11 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
         <!-- 저장 버튼 -->
         <button class="info-save-btn" id="mpInfoSave">
           <i class="fas fa-floppy-disk"></i> 회원정보 저장
+        </button>
+
+        <!-- 회원탈퇴 버튼 -->
+        <button class="info-withdraw-btn" id="mpWithdrawBtn">
+          <i class="fas fa-user-xmark"></i> 회원탈퇴
         </button>
 
       </div><!-- /info-form-wrap -->
@@ -4582,8 +5027,170 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
       </div>
     </div>
 
-    <!-- 중앙: 영상 -->
+    <!-- 중앙: 영상 + 시험 뷰 -->
     <div class="player-main">
+
+      <!-- ★ 시험(퀴즈) 뷰 -->
+      <div class="quiz-view" id="quizView">
+
+        <!-- 탭 바 -->
+        <div class="quiz-tab-bar">
+          <button class="quiz-tab-btn active" id="quizTabSingle">한 문제씩</button>
+          <button class="quiz-tab-btn" id="quizTabAll">전체 보기</button>
+        </div>
+
+        <!-- 한 문제씩 뷰 -->
+        <div id="quizSingleView">
+          <div class="quiz-single-wrap">
+            <!-- 문제 카드 -->
+            <div class="quiz-card">
+              <div class="quiz-card-header">
+                <div>
+                  <span class="quiz-num" id="quizCurNum">01</span>
+                  <span class="quiz-num-total"> / <span id="quizTotalNum">20</span></span>
+                </div>
+                <div class="quiz-meta" id="quizMetaRow">
+                  <span class="quiz-tag" id="quizAreaTag">직무역량 · 중</span>
+                  <span class="quiz-score-tag" id="quizScoreTag">배점 3점</span>
+                </div>
+              </div>
+              <div class="quiz-question" id="quizQuestion"></div>
+              <div class="quiz-choices" id="quizChoices"></div>
+              <div class="quiz-nav">
+                <button class="quiz-prev-btn" id="quizPrevBtn">
+                  <i class="fas fa-arrow-left"></i> 이전 문제
+                </button>
+                <div class="quiz-nav-center">
+                  <b id="quizAnsweredCount">0</b> / <span id="quizNavTotal">20</span> 응답 완료
+                </div>
+                <button class="quiz-next-btn" id="quizNextBtn">
+                  다음 문제 <i class="fas fa-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- OMR 답안지 -->
+            <div class="quiz-omr">
+              <div class="quiz-omr-title">OMR 답안지</div>
+              <div class="quiz-omr-grid" id="quizOmrGrid"></div>
+              <div class="quiz-omr-legend">
+                <div class="omr-legend-row">
+                  <div class="omr-legend-dot answered"></div>응답 완료 (<span id="omrAnsweredNum">0</span>)
+                </div>
+                <div class="omr-legend-row">
+                  <div class="omr-legend-dot unanswered"></div>미응답 (<span id="omrUnansweredNum">20</span>)
+                </div>
+                <div class="omr-legend-row">
+                  <div class="omr-legend-dot review"></div>다시 보기 (<span id="omrReviewNum">0</span>)
+                </div>
+              </div>
+              <button class="quiz-submit-btn" id="quizSubmitBtn">
+                <i class="fas fa-paper-plane"></i> 최종 제출
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 전체 보기 뷰 -->
+        <div id="quizAllView" style="display:none;">
+          <div style="display:flex; gap:24px; align-items:flex-start;">
+            <!-- 문제 목록 -->
+            <div style="flex:1; min-width:0;">
+              <div class="quiz-all-wrap" id="quizAllList"></div>
+              <div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--gray-line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+                <div style="font-size:13px;color:var(--gray-mid);">
+                  응답 완료 <b style="color:var(--tr-orange);" id="quizAllAnsweredCount">0</b> / <span id="quizAllTotal">20</span>문항
+                </div>
+                <button class="quiz-submit-btn" id="quizSubmitBtnAll" style="width:auto;padding:0 36px;">
+                  <i class="fas fa-paper-plane"></i> 최종 제출
+                </button>
+              </div>
+            </div>
+            <!-- OMR 답안지 (전체보기에서도 표시) -->
+            <div class="quiz-omr" id="quizOmrAll" style="position:sticky;top:0;">
+              <div class="quiz-omr-title">OMR 답안지</div>
+              <div class="quiz-omr-grid" id="quizOmrGridAll"></div>
+              <div class="quiz-omr-legend">
+                <div class="omr-legend-row">
+                  <div class="omr-legend-dot answered"></div>응답 완료 (<span id="omrAnsweredNumAll">0</span>)
+                </div>
+                <div class="omr-legend-row">
+                  <div class="omr-legend-dot unanswered"></div>미응답 (<span id="omrUnansweredNumAll">20</span>)
+                </div>
+              </div>
+              <button class="quiz-submit-btn" id="quizSubmitBtnAllOmr" style="margin-top:8px;">
+                <i class="fas fa-paper-plane"></i> 최종 제출
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /quiz-view -->
+
+      <!-- 시험 결과 페이지 -->
+      <div class="quiz-result-page" id="quizResultPage">
+        <div id="qrVerdictBadge" class="qr-verdict pass">
+          <i class="fas fa-circle-check"></i> <span id="qrVerdictText">합격</span>
+        </div>
+        <h2 class="qr-title" id="qrTitle">시험 결과</h2>
+        <p class="qr-sub" id="qrSub"></p>
+
+        <div class="qr-card" id="qrCard">
+          <div class="qr-card-head" id="qrCardHead">
+            <i class="fas fa-trophy" id="qrCardIcon"></i>
+            <span id="qrCardHeadText">시험뷰어 — 결과</span>
+          </div>
+          <div class="qr-card-body">
+            <!-- 점수 -->
+            <div class="qr-score-row">
+              <span class="qr-score-num" id="qrScoreNum">0</span>
+              <span class="qr-score-max" id="qrScoreMax">/ 0점</span>
+            </div>
+            <!-- 통계 -->
+            <div class="qr-stat-grid">
+              <div class="qr-stat-item">
+                <div class="qr-stat-label">총 문항 수</div>
+                <div class="qr-stat-value"><span id="qrTotal">0</span><span class="unit">문항</span></div>
+              </div>
+              <div class="qr-stat-item">
+                <div class="qr-stat-label">응답 완료</div>
+                <div class="qr-stat-value"><span id="qrAnswered">0</span><span class="unit">문항</span></div>
+              </div>
+              <div class="qr-stat-item">
+                <div class="qr-stat-label">정답 문항</div>
+                <div class="qr-stat-value"><span id="qrCorrect">0</span><span class="unit">문항</span></div>
+              </div>
+              <div class="qr-stat-item">
+                <div class="qr-stat-label">정답률</div>
+                <div class="qr-stat-value"><span id="qrPct">0</span><span class="unit">%</span></div>
+              </div>
+            </div>
+            <!-- 점수 바 -->
+            <div class="qr-bar-wrap">
+              <div class="qr-bar-label">
+                <span>내 점수</span>
+                <span>합격선 60%</span>
+              </div>
+              <div class="qr-bar-track">
+                <div class="qr-bar-fill" id="qrBarFill" style="width:0%"></div>
+                <div class="qr-bar-threshold" style="left:60%">
+                  <span class="qr-bar-threshold-label">60%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="qr-actions">
+          <button class="qr-retry-btn" id="qrRetryBtn">
+            <i class="fas fa-rotate-left"></i> 재응시하기
+          </button>
+          <button class="qr-back-btn" id="qrBackBtn">
+            <i class="fas fa-list"></i> 목차로 돌아가기
+          </button>
+        </div>
+      </div>
+
       <div class="player-video-area">
         <div class="player-video-title" id="playerVideoTitle">강의 1차시</div>
         <div class="player-fake-video" id="playerFakeVideo">
@@ -5000,6 +5607,279 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
 
 
 <!-- ═══════════════════════════════════════════
+     회원탈퇴 — STEP1: 비밀번호 확인
+═══════════════════════════════════════════ -->
+<div id="page-withdraw-pw">
+  <div class="withdraw-wrap">
+    <div class="withdraw-icon warn"><i class="fas fa-lock"></i></div>
+    <h2 class="withdraw-title">본인 확인</h2>
+    <p class="withdraw-sub">회원탈퇴를 진행하기 전에<br>현재 비밀번호를 입력하여 본인 확인을 해주세요.</p>
+    <div class="withdraw-box">
+      <span class="wd-label">현재 비밀번호 <span style="color:var(--tr-orange);">*</span></span>
+      <div class="withdraw-pw-wrap">
+        <input type="password" class="withdraw-pw-input" id="withdrawPwInput" placeholder="현재 비밀번호를 입력해 주세요" />
+        <button class="withdraw-pw-toggle" id="withdrawPwToggle" type="button" tabindex="-1">
+          <i class="fas fa-eye" id="withdrawPwEyeIcon"></i>
+        </button>
+      </div>
+      <div class="withdraw-pw-msg" id="withdrawPwMsg"></div>
+      <div style="margin-top:8px;padding:10px 14px;background:var(--tr-light-gold);border-radius:6px;font-size:12.5px;color:var(--tr-dark-amber);">
+        <i class="fas fa-circle-info" style="margin-right:5px;"></i>
+        <b>테스트 비밀번호 :</b> test1234
+      </div>
+    </div>
+    <button class="withdraw-confirm-btn" id="withdrawPwConfirmBtn">
+      <i class="fas fa-arrow-right"></i> 확인
+    </button>
+    <a href="#" id="withdrawPwCancelBtn" style="margin-top:16px;font-size:13px;color:var(--gray-mid);text-decoration:underline;">취소</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     회원탈퇴 — STEP2: 탈퇴 안내 확인
+═══════════════════════════════════════════ -->
+<div id="page-withdraw-confirm">
+  <div class="withdraw-wrap">
+    <div class="withdraw-icon info"><i class="fas fa-triangle-exclamation"></i></div>
+    <h2 class="withdraw-title">회원탈퇴 전 꼭 확인해 주세요</h2>
+    <p class="withdraw-sub">탈퇴 전 아래 내용을 반드시 확인하신 후 진행해 주세요.</p>
+    <div class="withdraw-notice-box">
+      <div class="withdraw-notice-title">
+        <i class="fas fa-circle-exclamation"></i> 탈퇴 시 삭제되는 정보
+      </div>
+      <ul class="withdraw-notice-list">
+        <li>회원 탈퇴 시 <b>아이디, 이름, 연락처, 주소 등 모든 회원 정보</b>가 영구적으로 삭제되며 복구할 수 없습니다.</li>
+        <li>수강 중이거나 수강 완료한 <b>교육 이력 및 수료증</b>이 모두 삭제됩니다.</li>
+        <li><b>결제 이력 및 전자세금계산서 내역</b>은 탈퇴 후 조회할 수 없습니다.</li>
+        <li>보유 중인 <b>쿠폰, 적립 포인트</b>는 즉시 소멸되며 환불되지 않습니다.</li>
+        <li>탈퇴 후 동일 아이디로 <b>재가입이 불가</b>하며, 기존 데이터는 복원되지 않습니다.</li>
+        <li>환불 가능한 과정이 있는 경우, <b>탈퇴 전에 먼저 환불을 신청</b>해 주시기 바랍니다.</li>
+      </ul>
+    </div>
+    <div class="withdraw-action-row">
+      <button class="withdraw-do-btn" id="withdrawDoBtn">
+        <i class="fas fa-user-xmark"></i> 탈퇴하기
+      </button>
+      <button class="withdraw-cancel-btn" id="withdrawConfirmCancelBtn">
+        <i class="fas fa-arrow-left"></i> 취소
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     회원탈퇴 — STEP3: 탈퇴 완료
+═══════════════════════════════════════════ -->
+<div id="page-withdraw-done">
+  <div class="withdraw-wrap">
+    <div class="withdraw-icon done"><i class="fas fa-circle-check"></i></div>
+    <h2 class="withdraw-title" id="withdrawDoneTitle"></h2>
+    <p class="withdraw-sub">그동안 톰슨로이터 교육센터를 이용해 주셔서 진심으로 감사드립니다.<br>더 좋은 서비스로 보답할 수 있도록 끊임없이 노력하겠습니다.<br><br>언제든 다시 찾아 주시면 언제나 환영합니다.</p>
+    <button class="withdraw-done-btn" id="withdrawDoneBtn">
+      <i class="fas fa-home"></i> 확인
+    </button>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     찜과정 일괄 수강신청 페이지 (page-enroll-wish)
+═══════════════════════════════════════════ -->
+<div id="page-enroll-wish" style="display:none;">
+
+  <!-- 브레드크럼 -->
+  <div class="enroll-crumb">
+    <div class="enroll-crumb-inner">
+      <a href="#" onclick="showMypage();return false;">나의 강의실</a>
+      <i class="fas fa-chevron-right"></i>
+      <a href="#" onclick="showMypage();document.querySelector('.mp-menu-item[data-mp=wish]').click();return false;">찜과정</a>
+      <i class="fas fa-chevron-right"></i>
+      <span class="cur">수강신청 / 결제</span>
+    </div>
+  </div>
+
+  <!-- 스텝 바 -->
+  <div class="enroll-steps-bar">
+    <div class="enroll-steps-inner">
+      <div class="estep on" id="wishEnrollStep1"><span class="en">1</span>신청정보 입력</div>
+      <div class="estep-line"></div>
+      <div class="estep" id="wishEnrollStep2"><span class="en">2</span>결제</div>
+      <div class="estep-line"></div>
+      <div class="estep" id="wishEnrollStep3"><span class="en">3</span>신청완료</div>
+    </div>
+  </div>
+
+  <div class="enroll-body">
+    <!-- 좌측 입력 영역 -->
+    <div class="enroll-left">
+
+      <!-- ① 신청 과정 목록 -->
+      <div class="enroll-section">
+        <div class="enroll-sec-head">
+          <i class="fas fa-book-open"></i>
+          <h3>신청 과정</h3>
+        </div>
+        <div class="enroll-sec-body">
+          <div class="wish-course-list" id="wishEnrollCourseList">
+            <!-- JS로 동적 생성 -->
+          </div>
+          <div class="wish-enroll-total-row">
+            <span class="k">총 결제금액</span>
+            <span class="v"><span id="wishEnrollTotalAmt">0</span><span class="won">원</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ② 수강신청자 정보 -->
+      <div class="enroll-section">
+        <div class="enroll-sec-head">
+          <i class="fas fa-user-circle"></i>
+          <h3>수강신청자 정보</h3>
+        </div>
+        <div class="enroll-sec-body">
+          <div class="enroll-field">
+            <div class="enroll-label">이름 <span class="req">*</span></div>
+            <input type="text" class="enroll-input" id="wishEnrollName" placeholder="이름" readonly />
+          </div>
+          <div class="enroll-field">
+            <div class="enroll-label">연락처 <span class="req">*</span></div>
+            <input type="tel" class="enroll-input" id="wishEnrollPhone" placeholder="휴대폰번호" readonly />
+          </div>
+          <div class="enroll-field">
+            <div class="enroll-label">이메일</div>
+            <input type="email" class="enroll-input" id="wishEnrollEmail" placeholder="이메일 주소 (선택)" />
+            <div class="enroll-field-hint">수강 확인 안내를 이메일로도 받으실 수 있습니다.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ③ 배송지 주소 -->
+      <div class="enroll-section">
+        <div class="enroll-sec-head">
+          <i class="fas fa-location-dot"></i>
+          <h3>배송지 주소 <span style="font-size:12px;color:var(--gray-mid);font-weight:400;">· 전자교재 및 수료증 우편 발송</span></h3>
+        </div>
+        <div class="enroll-sec-body">
+          <div class="enroll-addr-toggle">
+            <label class="enroll-addr-radio">
+              <input type="radio" name="wishAddrType" value="default" checked id="wishAddrDefault" onchange="toggleWishAddr(this.value)" />
+              회원정보 주소 사용
+            </label>
+            <label class="enroll-addr-radio">
+              <input type="radio" name="wishAddrType" value="new" id="wishAddrNew" onchange="toggleWishAddr(this.value)" />
+              새 주소 입력
+            </label>
+          </div>
+          <div id="wishAddrDefaultWrap">
+            <div class="enroll-field">
+              <div class="enroll-label">주소</div>
+              <input type="text" class="enroll-input" id="wishAddrView" readonly />
+            </div>
+            <div class="enroll-field">
+              <div class="enroll-label">상세주소</div>
+              <input type="text" class="enroll-input" id="wishAddrDetailView" readonly />
+            </div>
+          </div>
+          <div class="enroll-new-addr" id="wishAddrNewWrap">
+            <div class="enroll-field">
+              <div class="enroll-label">주소 검색 <span class="req">*</span></div>
+              <div class="enroll-input-row">
+                <input type="text" class="enroll-input" id="wishNewAddr" placeholder="주소를 검색해 주세요" readonly />
+                <button class="enroll-addr-btn" onclick="searchWishAddr()"><i class="fas fa-magnifying-glass"></i> 검색</button>
+              </div>
+            </div>
+            <div class="enroll-field">
+              <div class="enroll-label">상세주소</div>
+              <input type="text" class="enroll-input" id="wishNewAddrDetail" placeholder="동/호수 등 상세주소 입력" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ④ 결제 방법 -->
+      <div class="enroll-section">
+        <div class="enroll-sec-head">
+          <i class="fas fa-credit-card"></i>
+          <h3>결제 방법</h3>
+        </div>
+        <div class="enroll-sec-body">
+          <div class="pay-methods" id="wishPayMethodGroup">
+            <label class="pay-method-card selected" onclick="selectWishPayMethod(this)">
+              <input type="radio" name="wishPayMethod" value="card" checked />
+              <i class="fas fa-credit-card"></i>
+              <span>신용카드</span>
+            </label>
+            <label class="pay-method-card" onclick="selectWishPayMethod(this)">
+              <input type="radio" name="wishPayMethod" value="vbank" />
+              <i class="fas fa-university"></i>
+              <span>가상계좌</span>
+            </label>
+            <label class="pay-method-card" onclick="selectWishPayMethod(this)">
+              <input type="radio" name="wishPayMethod" value="transfer" />
+              <i class="fas fa-arrow-right-arrow-left"></i>
+              <span>실시간계좌이체</span>
+            </label>
+          </div>
+          <div id="wishPayCardDetail" style="display:block;">
+            <div style="background:var(--tr-light-gold);border-radius:8px;padding:14px 18px;font-size:13px;line-height:1.8;">
+              <b style="color:var(--tr-dark-amber);">신용카드 안내</b><br>
+              결제하기 버튼 클릭 후 카드사 결제 화면으로 이동합니다.<br>
+              국내 모든 신용카드 및 체크카드 사용 가능합니다.
+            </div>
+          </div>
+          <div id="wishPayVbankDetail" style="display:none;">
+            <div style="background:var(--tr-light-gold);border-radius:8px;padding:14px 18px;font-size:13px;line-height:1.8;">
+              <b style="color:var(--tr-dark-amber);">가상계좌 안내</b><br>
+              결제 후 발급된 가상계좌로 <b>24시간 이내</b> 입금 시 수강이 확정됩니다.
+            </div>
+          </div>
+          <div id="wishPayTransferDetail" style="display:none;">
+            <div style="background:var(--tr-light-sky);border-radius:8px;padding:14px 18px;font-size:13px;line-height:1.8;">
+              <b style="color:var(--tr-dark-sky);">실시간계좌이체 안내</b><br>
+              결제 진행 시 본인 명의 계좌의 인터넷뱅킹 또는 모바일뱅킹이 필요합니다.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /enroll-left -->
+
+    <!-- 우측 결제 요약 -->
+    <div class="enroll-summary">
+      <div class="enroll-summary-head">
+        <i class="fas fa-receipt"></i>결제 금액 요약
+      </div>
+      <div class="enroll-summary-body">
+        <div class="es-row">
+          <span class="k">선택 과정</span>
+          <span class="v" id="wishSumCount" style="color:var(--tr-orange);font-weight:900;">0개</span>
+        </div>
+        <div class="es-row">
+          <span class="k">정가 합계</span>
+          <span class="v" id="wishSumPrice">0원</span>
+        </div>
+        <div class="es-row" id="wishSumDiscountRow" style="display:none;">
+          <span class="k">할인</span>
+          <span class="v" id="wishSumDiscount" style="color:var(--tr-orange);font-size:13px;text-align:right;"></span>
+        </div>
+        <div class="es-total-row">
+          <span class="k">최종 결제금액</span>
+          <span class="v"><span id="wishSumTotal">0</span><span class="won">원</span></span>
+        </div>
+        <div class="es-vat">VAT 포함</div>
+        <button class="enroll-pay-btn" id="wishEnrollPayBtn">
+          <i class="fas fa-lock"></i>결제하기
+        </button>
+        <div class="enroll-secure-note">
+          <i class="fas fa-shield-halved"></i>SSL 보안 결제로 안전하게 처리됩니다
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
      수강신청 페이지 (page-enroll)
 ═══════════════════════════════════════════ -->
 <div id="page-enroll" style="display:none;">
@@ -5147,38 +6027,14 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
               <i class="fas fa-arrow-right-arrow-left"></i>
               <span>실시간계좌이체</span>
             </label>
-            <label class="pay-method-card" onclick="selectPayMethod(this)">
-              <input type="radio" name="payMethod" value="kakao" />
-              <i class="fas fa-comment-dollar"></i>
-              <span>카카오페이</span>
-            </label>
-            <label class="pay-method-card" onclick="selectPayMethod(this)">
-              <input type="radio" name="payMethod" value="naver" />
-              <i class="fas fa-n"></i>
-              <span>네이버페이</span>
-            </label>
-            <label class="pay-method-card" onclick="selectPayMethod(this)">
-              <input type="radio" name="payMethod" value="company" />
-              <i class="fas fa-building"></i>
-              <span>법인카드/계산서</span>
-            </label>
           </div>
 
-          <!-- 신용카드 추가 입력 (선택 시 표시) -->
+          <!-- 신용카드 안내 -->
           <div id="payCardDetail" style="display:block;">
-            <div class="enroll-field">
-              <div class="enroll-label">카드번호</div>
-              <input type="text" class="enroll-input" id="payCardNum" placeholder="0000 - 0000 - 0000 - 0000" maxlength="19" oninput="formatCardNum(this)" />
-            </div>
-            <div class="enroll-input-row" style="gap:12px;">
-              <div class="enroll-field" style="flex:1;">
-                <div class="enroll-label">유효기간</div>
-                <input type="text" class="enroll-input" id="payCardExp" placeholder="MM / YY" maxlength="7" oninput="formatCardExp(this)" />
-              </div>
-              <div class="enroll-field" style="flex:1;">
-                <div class="enroll-label">CVC</div>
-                <input type="text" class="enroll-input" id="payCardCvc" placeholder="000" maxlength="3" />
-              </div>
+            <div style="background:var(--tr-light-gold);border-radius:8px;padding:14px 18px;font-size:13px;line-height:1.8;">
+              <b style="color:var(--tr-dark-amber);">신용카드 안내</b><br>
+              결제하기 버튼 클릭 후 카드사 결제 화면으로 이동합니다.<br>
+              국내 모든 신용카드 및 체크카드 사용 가능합니다.
             </div>
           </div>
 
@@ -5199,52 +6055,6 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
             </div>
           </div>
 
-          <!-- 카카오페이/네이버페이/법인 안내 -->
-          <div id="paySimpleDetail" style="display:none;">
-            <div style="background:var(--tr-light-teal);border-radius:8px;padding:14px 18px;font-size:13px;line-height:1.8;">
-              <b style="color:#2e8871;">간편결제 / 법인카드·세금계산서 안내</b><br>
-              결제하기 버튼 클릭 후 해당 서비스 앱 또는 화면으로 이동합니다.<br>
-              법인카드·세금계산서 발행은 결제 완료 후 고객센터로 문의해 주세요.
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ⑤ 이용약관 동의 -->
-      <div class="enroll-section">
-        <div class="enroll-sec-head">
-          <i class="fas fa-file-contract"></i>
-          <h3>이용약관 동의</h3>
-        </div>
-        <div class="enroll-sec-body">
-          <div class="enroll-agree-box">
-            <label class="enroll-agree-all">
-              <input type="checkbox" id="enrollAgreeAll" onchange="syncEnrollAgree(this.checked)" />
-              <b>전체 동의</b>
-            </label>
-            <div class="enroll-agree-divider"></div>
-            <label class="enroll-agree-row">
-              <input type="checkbox" class="enroll-chk" data-req="true" />
-              <span>[필수] 서비스 이용약관 동의</span>
-              <a href="#">보기</a>
-            </label>
-            <label class="enroll-agree-row">
-              <input type="checkbox" class="enroll-chk" data-req="true" />
-              <span>[필수] 개인정보 수집·이용 동의</span>
-              <a href="#">보기</a>
-            </label>
-            <label class="enroll-agree-row">
-              <input type="checkbox" class="enroll-chk" data-req="true" />
-              <span>[필수] 결제대행 서비스 이용약관 동의</span>
-              <a href="#">보기</a>
-            </label>
-            <label class="enroll-agree-row">
-              <input type="checkbox" class="enroll-chk" data-req="false" />
-              <span>[선택] 마케팅 정보 수신 동의</span>
-            </label>
-          </div>
-          <div id="enrollAgreeMsg" style="font-size:12px;color:#c0392b;min-height:18px;margin-top:4px;"></div>
         </div>
       </div>
 
@@ -5678,7 +6488,24 @@ const pageMain = document.getElementById('page-main');
 const pageDetail = document.getElementById('page-detail');
 const pageList = document.getElementById('page-list');
 const pageMypage = document.getElementById('page-mypage');
-function hideAll(){ pageMain.style.display='none'; pageDetail.style.display='none'; pageList.style.display='none'; pageMypage.style.display='none'; }
+const pageEnrollEl        = document.getElementById('page-enroll');
+const pageCompleteEl      = document.getElementById('page-complete');
+const pageEnrollWishEl    = document.getElementById('page-enroll-wish');
+const pageWithdrawPwEl    = document.getElementById('page-withdraw-pw');
+const pageWithdrawCfEl    = document.getElementById('page-withdraw-confirm');
+const pageWithdrawDnEl    = document.getElementById('page-withdraw-done');
+function hideAll(){
+  pageMain.style.display          = 'none';
+  pageDetail.style.display        = 'none';
+  pageList.style.display          = 'none';
+  pageMypage.style.display        = 'none';
+  if(pageEnrollEl)     pageEnrollEl.style.display     = 'none';
+  if(pageCompleteEl)   pageCompleteEl.style.display   = 'none';
+  if(pageEnrollWishEl) pageEnrollWishEl.style.display = 'none';
+  if(pageWithdrawPwEl) pageWithdrawPwEl.style.display = 'none';
+  if(pageWithdrawCfEl) pageWithdrawCfEl.style.display = 'none';
+  if(pageWithdrawDnEl) pageWithdrawDnEl.style.display = 'none';
+}
 function showMain(){
   hideAll(); pageMain.style.display = 'block';
   document.getElementById('stickyCta').classList.remove('show');
@@ -5778,10 +6605,10 @@ const EVENT_CARDS_HTML = `
     <div class="cthumb thumb-amber"><i class="fas fa-file-contract"></i><span class="days-badge">60일 수강</span>
       <div class="card-icons"><button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button></div>
       <div class="hover-detail">
-        <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-        <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-        <div class="hd-row"><span class="k">난이도</span>중급</div>
-        <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.9</span>&nbsp;후기 214건</div>
+        <div class="hd-row"><span class="k">학습시간</span>총 20강 · 15시간</div>
+        <div class="hd-row"><span class="k">수강기간</span>결제일로부터 60일</div>
+        <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+        <div class="hd-row"><span class="k">교재정보</span>전자교재 + 계약서 템플릿</div>
         <a href="#" class="hd-btn" onclick="showDetail();return false;">상세보기</a>
       </div>
     </div>
@@ -5801,10 +6628,10 @@ const EVENT_CARDS_HTML = `
     <div class="cthumb thumb-sky"><i class="fas fa-gavel"></i><span class="days-badge">45일 수강</span>
       <div class="card-icons"><button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button></div>
       <div class="hover-detail">
-        <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-        <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-        <div class="hd-row"><span class="k">난이도</span>기본</div>
-        <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.8</span>&nbsp;후기 93건</div>
+        <div class="hd-row"><span class="k">학습시간</span>총 15강 · 10시간</div>
+        <div class="hd-row"><span class="k">수강기간</span>결제일로부터 45일</div>
+        <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+        <div class="hd-row"><span class="k">교재정보</span>전자교재 + 대응 체크리스트</div>
         <a href="#" class="hd-btn" onclick="showDetail();return false;">상세보기</a>
       </div>
     </div>
@@ -5824,10 +6651,10 @@ const EVENT_CARDS_HTML = `
     <div class="cthumb thumb-teal"><i class="fas fa-scale-balanced"></i><span class="days-badge">오프라인 2일</span>
       <div class="card-icons"><button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button></div>
       <div class="hover-detail">
-        <div class="hd-row"><span class="k">학습유형</span>집합교육 (오프라인)</div>
-        <div class="hd-row"><span class="k">교육일정</span>8/5 ~ 8/6</div>
-        <div class="hd-row"><span class="k">난이도</span>심화</div>
-        <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.9</span>&nbsp;후기 71건</div>
+        <div class="hd-row"><span class="k">학습시간</span>2일 · 총 14시간</div>
+        <div class="hd-row"><span class="k">수강기간</span>8/5 ~ 8/6 (집합)</div>
+        <div class="hd-row"><span class="k">수료기준</span>출석률 90% 이상</div>
+        <div class="hd-row"><span class="k">교재정보</span>교재 + 소장 작성 워크시트</div>
         <a href="#" class="hd-btn" onclick="showDetail();return false;">상세보기</a>
       </div>
     </div>
@@ -5847,10 +6674,10 @@ const EVENT_CARDS_HTML = `
     <div class="cthumb thumb-lime"><i class="fas fa-leaf"></i><span class="days-badge">30일 수강</span>
       <div class="card-icons"><button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button></div>
       <div class="hover-detail">
-        <div class="hd-row"><span class="k">학습유형</span>온라인</div>
-        <div class="hd-row"><span class="k">교육일정</span>상시 수강</div>
-        <div class="hd-row"><span class="k">난이도</span>기본</div>
-        <div class="hd-row"><span class="k">평점</span><span class="hd-rating">★ 4.7</span>&nbsp;후기 58건</div>
+        <div class="hd-row"><span class="k">학습시간</span>총 12강 · 8시간</div>
+        <div class="hd-row"><span class="k">수강기간</span>결제일로부터 30일</div>
+        <div class="hd-row"><span class="k">수료기준</span>수강률 80% 이상</div>
+        <div class="hd-row"><span class="k">교재정보</span>전자교재 + 공시 가이드</div>
         <a href="#" class="hd-btn" onclick="showDetail();return false;">상세보기</a>
       </div>
     </div>
@@ -6535,6 +7362,107 @@ document.getElementById('mpInfoSave').addEventListener('click', () => {
   alert('✅ 회원정보가 저장되었습니다.\n\n이름: ' + name);
 });
 
+// ══ 회원탈퇴 기능 ══
+(function(){
+  /* 테스트 비밀번호 (실제 환경에서는 API 검증) */
+  const TEST_PW = 'test1234';
+
+  /* 페이지 전환 헬퍼 */
+  function showWithdrawPw(){
+    hideAll();
+    document.getElementById('page-withdraw-pw').style.display = 'block';
+    document.getElementById('withdrawPwInput').value = '';
+    document.getElementById('withdrawPwMsg').textContent = '';
+    window.scrollTo({ top: 0 });
+  }
+  function showWithdrawConfirm(){
+    hideAll();
+    document.getElementById('page-withdraw-confirm').style.display = 'block';
+    window.scrollTo({ top: 0 });
+  }
+  function showWithdrawDone(){
+    hideAll();
+    document.getElementById('page-withdraw-done').style.display = 'block';
+    window.scrollTo({ top: 0 });
+  }
+
+  /* 회원탈퇴 버튼 클릭 → 비밀번호 확인 페이지 */
+  document.getElementById('mpWithdrawBtn').addEventListener('click', function(){
+    showWithdrawPw();
+  });
+
+  /* 비밀번호 show/hide 토글 */
+  document.getElementById('withdrawPwToggle').addEventListener('click', function(){
+    const inp  = document.getElementById('withdrawPwInput');
+    const icon = document.getElementById('withdrawPwEyeIcon');
+    if(inp.type === 'password'){
+      inp.type = 'text';
+      icon.className = 'fas fa-eye-slash';
+    } else {
+      inp.type = 'password';
+      icon.className = 'fas fa-eye';
+    }
+  });
+
+  /* Enter키 지원 */
+  document.getElementById('withdrawPwInput').addEventListener('keydown', function(e){
+    if(e.key === 'Enter') document.getElementById('withdrawPwConfirmBtn').click();
+  });
+
+  /* 비밀번호 확인 → 탈퇴안내 페이지 */
+  document.getElementById('withdrawPwConfirmBtn').addEventListener('click', function(){
+    const pw  = document.getElementById('withdrawPwInput').value;
+    const msg = document.getElementById('withdrawPwMsg');
+    if(!pw){ msg.textContent = '비밀번호를 입력해 주세요.'; return; }
+    if(pw !== TEST_PW){
+      msg.textContent = '비밀번호가 일치하지 않습니다. 다시 확인해 주세요.';
+      document.getElementById('withdrawPwInput').value = '';
+      document.getElementById('withdrawPwInput').focus();
+      return;
+    }
+    msg.textContent = '';
+    showWithdrawConfirm();
+  });
+
+  /* 비밀번호 확인 페이지 취소 → 마이페이지로 */
+  document.getElementById('withdrawPwCancelBtn').addEventListener('click', function(e){
+    e.preventDefault();
+    showMypage();
+    // 회원정보수정 탭 활성화
+    const infoBtn = document.querySelector('.mp-menu-item[data-mp="info"]');
+    if(infoBtn){ infoBtn.click(); }
+  });
+
+  /* 탈퇴안내 페이지 취소 → 마이페이지로 */
+  document.getElementById('withdrawConfirmCancelBtn').addEventListener('click', function(){
+    showMypage();
+    const infoBtn = document.querySelector('.mp-menu-item[data-mp="info"]');
+    if(infoBtn){ infoBtn.click(); }
+  });
+
+  /* 탈퇴하기 → 완료 페이지 */
+  document.getElementById('withdrawDoBtn').addEventListener('click', function(){
+    /* 현재 로그인 이름 가져오기 */
+    const nameEl = document.querySelector('#utilInner [style*="color:var(--tr-dark-gold)"]');
+    let memberName = '회원';
+    if(nameEl){
+      const txt = nameEl.textContent.trim();
+      const m = txt.match(/(.+?)님/);
+      if(m) memberName = m[1].trim();
+    }
+    /* 완료 메시지 세팅 */
+    document.getElementById('withdrawDoneTitle').innerHTML =
+      '<span class="hl">' + memberName + '</span>님,<br>회원탈퇴가 정상적으로 처리되었습니다.';
+    showWithdrawDone();
+  });
+
+  /* 완료 확인 → 자동 로그아웃 후 메인 이동 */
+  document.getElementById('withdrawDoneBtn').addEventListener('click', function(){
+    location.reload(); /* reload = 로그아웃 + 메인 */
+  });
+
+})();
+
 // ══ 전역 GNB: 로고·대메뉴 클릭 시 메인 복귀 ══
 document.querySelectorAll('.gnb .logo').forEach(l => {
   l.addEventListener('click', e => { e.preventDefault(); showMain(); });
@@ -6821,30 +7749,32 @@ document.querySelectorAll('a, button').forEach(el => {
     showDetail();
   });
 
-  // 결제하기 버튼 — 바로 결제 처리 (모달 없이)
+  // 결제하기 버튼 → 찜과정 수강신청 페이지로 이동
   function doPayment(){
     const checked = getChecked();
     if(checked.length === 0) return;
-    const finalTotal = applyBarCoupon(barBaseTotal);
-    const count = checked.length;
-    const names = checked.map(cb => {
-      const id = cb.dataset.wishId;
-      return WISH_COURSES[id] ? WISH_COURSES[id].name.split(' — ')[0] : '';
-    }).join(', ');
 
-    // 결제된 과정 찜 목록에서 제거
-    checked.forEach(cb => {
-      const item = cb.closest('.wish-item');
+    // 선택된 과정 데이터 수집
+    const selectedItems = checked.map(cb => {
       const id   = cb.dataset.wishId;
-      if(item) item.remove();
-      delete WISH_COURSES[id];
+      const item = cb.closest('.wish-item');
+      return {
+        id,
+        name:   WISH_COURSES[id] ? WISH_COURSES[id].name : '',
+        cat:    item ? item.querySelector('.wish-item-cat')?.textContent.trim() : '',
+        period: item ? item.querySelector('.wish-item-meta span:nth-child(2)')?.textContent.trim() : '',
+        price:  parseInt(item?.dataset.price || '0', 10),
+        thumbClass: item ? [...item.querySelector('.wish-item-thumb').classList].find(c=>c.startsWith('thumb-')) : 'thumb-amber',
+        iconClass:  item ? item.querySelector('.wish-item-thumb i').className : 'fas fa-book',
+      };
     });
-    barAppliedCoupon = null;
-    syncUI();
-    if(document.querySelectorAll('.wish-item').length === 0){
-      wishList.innerHTML = '<div class="wish-empty"><i class="fas fa-heart" style="font-size:40px;color:var(--gray-line);display:block;margin-bottom:14px;"></i>찜한 과정이 없습니다.<br><span style="font-size:12.5px;color:var(--gray-mid);margin-top:6px;display:inline-block;">관심 과정의 하트를 눌러 찜 목록에 추가해 보세요.</span></div>';
-    }
-    alert(`✅ 결제가 완료되었습니다!\n\n결제 과정: ${count}개 (${names})\n결제 금액: ${finalTotal.toLocaleString('ko-KR')}원\n\n수강신청 내역은 [나의 강의실 > 학습현황]에서 확인하실 수 있습니다.`);
+    const rawTotal    = barBaseTotal;
+    const finalTotal  = applyBarCoupon(rawTotal);
+    const discountAmt = rawTotal - finalTotal;
+    const couponName  = barAppliedCoupon ? barAppliedCoupon.name : '';
+
+    // 수강신청 페이지 열기
+    window.showEnrollWish(selectedItems, rawTotal, finalTotal, discountAmt, couponName);
   }
 
   payBtn.addEventListener('click', doPayment);
@@ -6906,7 +7836,8 @@ document.querySelectorAll('a, button').forEach(el => {
     { id:2, title:'강의 2차시 — 핵심 조항 분석 (전반부)', duration:'38:00', done:true,  type:'video', progress:100 },
     { id:3, title:'강의 3차시 — 핵심 조항 분석 (후반부)', duration:'41:00', done:false, type:'video', progress:67  },
     { id:4, title:'보충자료 — 계약서 샘플 리뷰',          duration:'22:00', done:false, type:'video', progress:0   },
-    { id:5, title:'자동출제 테스트',                      duration:'—',     done:false, type:'quiz',  progress:0   },
+    { id:5, title:'시험뷰어',                            duration:'—',     done:false, type:'quiz',  progress:0   },
+    { id:6, title:'퀴즈뷰어',                            duration:'—',     done:false, type:'quiz',  progress:0   },
   ];
   let currentIdx = 0; // 현재 재생 중인 목차 인덱스
   let isPlaying  = false;
@@ -6991,23 +7922,399 @@ document.querySelectorAll('a, button').forEach(el => {
   }
 
   /* ── 차시 로드 ── */
+  const videoArea = document.querySelector('.player-video-area');
+  const ctrlBar   = document.querySelector('.player-controls');
+  const quizView  = document.getElementById('quizView');
+
   function loadLesson(idx){
     if(idx < 0 || idx >= TOC.length) return;
     currentIdx = idx;
     const lesson = TOC[idx];
     stopPlay();
-    videoTitle.textContent  = lesson.title;
-    courseTitle.textContent = `국문·영문 계약서 검토 실무 A to Z — 조항별 리스크 분석`;
-    // 시간 세팅
-    const parts = (lesson.duration === '—' ? '00:00' : lesson.duration).split(':');
-    totalSec = parseInt(parts[0],10)*60 + parseInt(parts[1],10);
-    seekSec  = lesson.done ? Math.floor(totalSec * 0.67) : 0;
-    updateSeek();
-    renderToc();
+
+    // 결과 페이지가 열려있으면 항상 닫기
+    document.getElementById('quizResultPage').classList.remove('active');
+
+    if(lesson.type === 'quiz'){
+      // 영상 숨기고 시험/퀴즈 뷰 표시
+      videoArea.style.display = 'none';
+      ctrlBar.style.display   = 'none';
+      quizView.classList.add('active');
+      // 탭/뷰 상태 초기화
+      document.getElementById('quizTabSingle').style.display = '';
+      document.getElementById('quizTabAll').style.display    = '';
+      document.getElementById('quizSingleView').style.display = '';
+      document.getElementById('quizAllView').style.display    = 'none';
+      videoTitle.textContent  = lesson.title;
+      courseTitle.textContent = '국문·영문 계약서 검토 실무 A to Z — 조항별 리스크 분석';
+      renderToc();
+      // 시험뷰어(id=5)와 퀴즈뷰어(id=6) 구분
+      initQuiz(lesson.id === 6 ? 'quiz' : 'exam');
+    } else {
+      // 영상 표시, 시험/결과 숨김
+      videoArea.style.display = '';
+      ctrlBar.style.display   = '';
+      quizView.classList.remove('active');
+      videoTitle.textContent  = lesson.title;
+      courseTitle.textContent = '국문·영문 계약서 검토 실무 A to Z — 조항별 리스크 분석';
+      const parts = (lesson.duration === '—' ? '00:00' : lesson.duration).split(':');
+      totalSec = parseInt(parts[0],10)*60 + parseInt(parts[1],10);
+      seekSec  = lesson.done ? Math.floor(totalSec * 0.67) : 0;
+      updateSeek();
+      renderToc();
+    }
     // 다음 차시 버튼
     nextBtn.disabled = idx >= TOC.length-1;
     nextBtn.style.opacity = nextBtn.disabled ? '0.4' : '1';
   }
+
+  /* ══════════════════════════════════════
+     시험(퀴즈) 엔진
+  ══════════════════════════════════════ */
+  const QUIZ_DATA = [
+    { q:'프로젝트 일정 관리에서 임계경로(Critical Path)는 가장 짧은 작업 경로를 의미한다.', type:'OX', area:'직무역량 · 중', score:20, choices:['O','X'] },
+    { q:'계약서에서 불가항력(Force Majeure) 조항은 천재지변 등 당사자가 통제할 수 없는 상황에서 계약 의무를 면제해준다.', type:'OX', area:'계약법 · 하', score:20, choices:['O','X'] },
+    { q:'영문계약서에서 "Indemnification" 조항의 주요 기능으로 가장 적절한 것은?', type:'선다형', area:'영문계약 · 중', score:20, choices:['손해배상 책임의 이전 또는 면제 규정','계약 종료 시 잔여 채무 처리 방법 규정','지식재산권 귀속 관계 규정','준거법 및 관할 법원 지정'] },
+    { q:'하도급법상 원사업자가 수급사업자에게 부당하게 단가를 인하하는 행위는 부당한 하도급대금 결정에 해당한다.', type:'OX', area:'공정거래 · 중', score:20, choices:['O','X'] },
+    { q:'개인정보 보호법상 민감정보에 해당하지 않는 것은?', type:'선다형', area:'개인정보보호 · 상', score:20, choices:['건강에 관한 정보','노동조합 가입 여부','주민등록번호','유전정보'] },
+  ];
+
+  let quizState = {
+    current: 0,
+    answers: new Array(QUIZ_DATA.length).fill(null), // null=미응답, 0/1=OX, 0~3=선다
+    reviews: new Array(QUIZ_DATA.length).fill(false),
+    tab: 'single', // 'single' | 'all'
+  };
+
+  // 퀴즈뷰어용 간소 데이터 (5문항)
+  const QUIZ_SHORT = QUIZ_DATA.slice(0, 5);
+  let activeQuizData = QUIZ_DATA; // 현재 활성 데이터
+
+  let _lastQuizMode = 'exam';
+  function initQuiz(mode){
+    mode = mode || 'exam';
+    _lastQuizMode = mode;
+    activeQuizData = (mode === 'quiz') ? QUIZ_SHORT : QUIZ_DATA;
+    // 동적 데이터를 QUIZ_DATA 참조 대신 activeQuizData 사용
+    quizState.current = 0;
+    quizState.answers = new Array(activeQuizData.length).fill(null);
+    quizState.reviews = new Array(activeQuizData.length).fill(false);
+    quizState.tab = 'single';
+    document.getElementById('quizTabSingle').classList.add('active');
+    document.getElementById('quizTabAll').classList.remove('active');
+    document.getElementById('quizSingleView').style.display = '';
+    document.getElementById('quizAllView').style.display = 'none';
+    // 전체 문항수 표시 업데이트
+    const totEls = document.querySelectorAll('[id="quizAllTotal"], [id="quizNavTotal"], [id="quizTotalNum"]');
+    totEls.forEach(el => el.textContent = activeQuizData.length);
+    renderQuizSingle();
+    renderOMR();
+  }
+
+  function renderQuizSingle(){
+    const q   = activeQuizData[quizState.current];
+    const idx = quizState.current;
+    const n   = activeQuizData.length;
+
+    document.getElementById('quizCurNum').textContent  = String(idx+1).padStart(2,'0');
+    document.getElementById('quizTotalNum').textContent = n;
+    // 퀴즈뷰어: 직무역량·배점 숨김 / 시험뷰어: 표시
+    const metaRow = document.getElementById('quizMetaRow');
+    if(_lastQuizMode === 'quiz'){
+      metaRow.style.display = 'none';
+    } else {
+      metaRow.style.display = '';
+      document.getElementById('quizAreaTag').textContent  = q.area;
+      document.getElementById('quizScoreTag').textContent = '배점 ' + q.score + '점';
+    }
+    document.getElementById('quizQuestion').textContent = q.q;
+
+    // 보기 렌더
+    const choicesEl = document.getElementById('quizChoices');
+    choicesEl.innerHTML = q.choices.map((c, ci) => {
+      const selected = quizState.answers[idx] === ci ? ' selected' : '';
+      const numLabel = q.type === 'OX' ? (ci===0?'①':'②') : '①②③④'.charAt(ci);
+      return `<button class="quiz-choice${selected}" data-ci="${ci}">
+        <span class="quiz-choice-num">${numLabel}</span>${c}
+      </button>`;
+    }).join('');
+    choicesEl.querySelectorAll('.quiz-choice').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const ci = parseInt(btn.dataset.ci, 10);
+        quizState.answers[idx] = ci;
+        renderQuizSingle();
+        renderOMR();
+      });
+    });
+
+    // 이전/다음 버튼
+    document.getElementById('quizPrevBtn').disabled = idx === 0;
+    const nextBtn2 = document.getElementById('quizNextBtn');
+    if(idx === n-1){
+      nextBtn2.innerHTML = '<i class="fas fa-paper-plane"></i> 제출';
+    } else {
+      nextBtn2.innerHTML = '다음 문제 <i class="fas fa-arrow-right"></i>';
+    }
+
+    // 응답 완료 수
+    const answered = quizState.answers.filter(a => a !== null).length;
+    document.getElementById('quizAnsweredCount').textContent = answered;
+    document.getElementById('quizNavTotal').textContent = n;
+  }
+
+  function buildOmrCells(targetGridId, isAll){
+    const grid = document.getElementById(targetGridId);
+    if(!grid) return;
+    grid.innerHTML = activeQuizData.map((q, i) => {
+      let cls = 'omr-cell';
+      // 한 문제씩 뷰에서만 현재 문제 강조
+      if(!isAll && i === quizState.current) cls += ' current';
+      else if(quizState.answers[i] !== null) cls += ' answered';
+
+      const ans = quizState.answers[i];
+      let ansLabel = '—';
+      if(ans !== null){
+        ansLabel = q.type === 'OX'
+          ? (ans === 0 ? 'O' : 'X')
+          : '①②③④'.charAt(ans);
+      }
+      return `<div class="${cls}" data-qi="${i}">
+        <span class="omr-num">${i+1}번</span>
+        <span class="omr-divider"></span>
+        <span class="omr-ans">${ansLabel}</span>
+      </div>`;
+    }).join('');
+    grid.querySelectorAll('.omr-cell').forEach(cell => {
+      cell.addEventListener('click', () => {
+        quizState.current = parseInt(cell.dataset.qi, 10);
+        if(isAll){
+          // 전체보기에서 클릭 → 한 문제씩 뷰로 이동
+          document.getElementById('quizTabSingle').click();
+        } else {
+          renderQuizSingle();
+          renderOMR();
+        }
+      });
+    });
+  }
+
+  function renderOMR(){
+    buildOmrCells('quizOmrGrid', false);
+    buildOmrCells('quizOmrGridAll', true);
+
+    const answered   = quizState.answers.filter(a => a !== null).length;
+    const unanswered = activeQuizData.length - answered;
+    const reviews = quizState.reviews.filter(Boolean).length;
+    // 한 문제씩 OMR 범례
+    document.getElementById('omrAnsweredNum').textContent   = answered;
+    document.getElementById('omrUnansweredNum').textContent = unanswered;
+    document.getElementById('omrReviewNum').textContent     = reviews;
+    // 전체보기 OMR 범례
+    const allAnswEl = document.getElementById('omrAnsweredNumAll');
+    const allUnansEl = document.getElementById('omrUnansweredNumAll');
+    if(allAnswEl)  allAnswEl.textContent  = answered;
+    if(allUnansEl) allUnansEl.textContent = unanswered;
+    // 전체보기 응답완료 카운트
+    const allCountEl = document.getElementById('quizAllAnsweredCount');
+    if(allCountEl) allCountEl.textContent = answered;
+  }
+
+  function renderQuizAll(){
+    const list = document.getElementById('quizAllList');
+    list.innerHTML = activeQuizData.map((q, i) => {
+      const numLabel = i+1;
+      const choicesHtml = q.choices.map((c, ci) => {
+        const selected = quizState.answers[i] === ci ? ' selected' : '';
+        const nl = q.type === 'OX' ? (ci===0?'①':'②') : '①②③④'.charAt(ci);
+        return `<button class="quiz-choice${selected}" style="margin-bottom:8px;" data-qi="${i}" data-ci="${ci}">
+          <span class="quiz-choice-num">${nl}</span>${c}
+        </button>`;
+      }).join('');
+      return `<div class="quiz-all-card">
+        <div class="quiz-all-header">
+          <span class="quiz-all-num">${String(numLabel).padStart(2,'0')}</span>
+          <span class="quiz-tag">${q.area}</span>
+          <span class="quiz-score-tag">배점 ${q.score}점</span>
+        </div>
+        <div class="quiz-question" style="margin-bottom:14px;">${q.q}</div>
+        <div class="quiz-choices">${choicesHtml}</div>
+      </div>`;
+    }).join('');
+    list.querySelectorAll('.quiz-choice').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const qi = parseInt(btn.dataset.qi, 10);
+        const ci = parseInt(btn.dataset.ci, 10);
+        quizState.answers[qi] = ci;
+        renderQuizAll();
+        renderOMR();
+      });
+    });
+    // 전체보기 응답수 카운터 업데이트
+    const answered = quizState.answers.filter(a => a !== null).length;
+    const allAnswEl = document.getElementById('quizAllAnsweredCount');
+    const allTotalEl = document.getElementById('quizAllTotal');
+    if(allAnswEl)  allAnswEl.textContent  = answered;
+    if(allTotalEl) allTotalEl.textContent = QUIZ_DATA.length;
+  }
+
+  // 전체보기 제출 버튼
+  document.getElementById('quizSubmitBtnAll').addEventListener('click', submitQuiz);
+
+  // 탭 전환
+  document.getElementById('quizTabSingle').addEventListener('click', () => {
+    quizState.tab = 'single';
+    document.getElementById('quizTabSingle').classList.add('active');
+    document.getElementById('quizTabAll').classList.remove('active');
+    document.getElementById('quizSingleView').style.display = '';
+    document.getElementById('quizAllView').style.display = 'none';
+    renderQuizSingle(); renderOMR();
+  });
+  document.getElementById('quizTabAll').addEventListener('click', () => {
+    quizState.tab = 'all';
+    document.getElementById('quizTabSingle').classList.remove('active');
+    document.getElementById('quizTabAll').classList.add('active');
+    document.getElementById('quizSingleView').style.display = 'none';
+    document.getElementById('quizAllView').style.display = '';
+    renderQuizAll(); renderOMR();
+  });
+
+  // 이전/다음 버튼
+  document.getElementById('quizPrevBtn').addEventListener('click', () => {
+    if(quizState.current > 0){ quizState.current--; renderQuizSingle(); renderOMR(); }
+  });
+  document.getElementById('quizNextBtn').addEventListener('click', () => {
+    if(quizState.current < QUIZ_DATA.length-1){
+      quizState.current++; renderQuizSingle(); renderOMR();
+    } else {
+      submitQuiz();
+    }
+  });
+
+  // 최종 제출
+  document.getElementById('quizSubmitBtn').addEventListener('click', submitQuiz);
+  document.getElementById('quizSubmitBtnAll').addEventListener('click', submitQuiz);
+  document.getElementById('quizSubmitBtnAllOmr').addEventListener('click', submitQuiz);
+
+  /* 시험 결과 페이지 표시 */
+  function showResultPage(score, maxScore, answered, total){
+    const isQuizMode = (_lastQuizMode === 'quiz');
+    // 퀴즈뷰어: 응답수 기준(응답=정답 시뮬레이션), 시험뷰어: 점수 기준
+    const pct      = total > 0 ? Math.round(answered / total * 100) : 0;
+    const isPassed = pct >= 60;
+
+    // ── 카드 헤드 타이틀 ──
+    const titleName = isQuizMode ? '퀴즈뷰어' : '시험뷰어';
+    document.getElementById('qrCardHeadText').textContent = titleName + ' — 결과';
+    const cardHead = document.getElementById('qrCardHead');
+    cardHead.className = 'qr-card-head ' + (isPassed ? 'pass' : 'fail');
+    document.getElementById('qrCardIcon').className = isPassed ? 'fas fa-trophy' : 'fas fa-circle-xmark';
+
+    // ── 합격/불합격 뱃지 ──
+    const badge = document.getElementById('qrVerdictBadge');
+    badge.className = 'qr-verdict ' + (isPassed ? 'pass' : 'fail');
+    badge.querySelector('i').className = isPassed ? 'fas fa-circle-check' : 'fas fa-circle-xmark';
+    document.getElementById('qrVerdictText').textContent = isPassed ? '합격' : '불합격';
+
+    // ── 제목 ──
+    document.getElementById('qrTitle').innerHTML = isPassed
+      ? '수고하셨습니다! <span class="hl-pass">합격</span>입니다 🎉'
+      : '아쉽지만 <span class="hl-fail">불합격</span>입니다';
+
+    // ── 부제 ──
+    if(isQuizMode){
+      document.getElementById('qrSub').innerHTML =
+        `총 <b>${total}문항</b> 중 <b>${answered}문항</b>을 맞혔습니다. · ` +
+        (isPassed ? `<span style="color:#2e8871;font-weight:700;">✅ 합격</span>` : `<span style="color:#c0392b;font-weight:700;">❌ 불합격</span>`);
+    } else {
+      document.getElementById('qrSub').innerHTML = isPassed
+        ? `총 ${total}문항 중 <b>${answered}문항</b> 응답 완료 · 정답률 <b>${pct}%</b>로 합격 기준(60%)을 충족했습니다.`
+        : `총 ${total}문항 중 <b>${answered}문항</b> 응답 완료 · 정답률 <b>${pct}%</b>로 합격 기준(60%)에 미달했습니다.<br>재응시하기를 통해 다시 도전해 보세요.`;
+    }
+
+    // ── 점수/맞은 갯수 표시 ──
+    const scoreEl = document.getElementById('qrScoreNum');
+    if(isQuizMode){
+      // 퀴즈: "N / M 문항" 형태로 표시
+      scoreEl.textContent = answered;
+      scoreEl.className   = 'qr-score-num ' + (isPassed ? 'pass' : 'fail');
+      document.getElementById('qrScoreMax').textContent = '/ ' + total + '문항';
+    } else {
+      scoreEl.textContent = score;
+      scoreEl.className   = 'qr-score-num ' + (isPassed ? 'pass' : 'fail');
+      document.getElementById('qrScoreMax').textContent = '/ ' + maxScore + '점';
+    }
+
+    // ── 통계 그리드 ──
+    document.getElementById('qrTotal').textContent    = total;
+    document.getElementById('qrAnswered').textContent = answered;
+    document.getElementById('qrCorrect').textContent  = answered;
+    document.getElementById('qrPct').textContent      = pct;
+
+    // 퀴즈모드: 통계 그리드 라벨 변경
+    const statLabels = document.querySelectorAll('.qr-stat-label');
+    if(statLabels.length >= 4){
+      if(isQuizMode){
+        statLabels[0].textContent = '총 문항 수';
+        statLabels[1].textContent = '응답 완료';
+        statLabels[2].textContent = '맞은 문항';
+        statLabels[3].textContent = '정답률';
+      } else {
+        statLabels[0].textContent = '총 문항 수';
+        statLabels[1].textContent = '응답 완료';
+        statLabels[2].textContent = '정답 문항';
+        statLabels[3].textContent = '정답률';
+      }
+    }
+
+    // ── 점수 바 ──
+    const fill = document.getElementById('qrBarFill');
+    fill.className = 'qr-bar-fill ' + (isPassed ? 'pass' : 'fail');
+    setTimeout(() => { fill.style.width = Math.min(pct, 100) + '%'; }, 50);
+
+    // ── 시험 폼 숨기고 결과 표시 ──
+    document.getElementById('quizSingleView').style.display = 'none';
+    document.getElementById('quizAllView').style.display    = 'none';
+    document.getElementById('quizTabSingle').style.display  = 'none';
+    document.getElementById('quizTabAll').style.display     = 'none';
+    document.getElementById('quizView').classList.remove('active');
+    document.getElementById('quizResultPage').classList.add('active');
+  }
+
+  function submitQuiz(){
+    const answered = quizState.answers.filter(a => a !== null).length;
+    const total    = activeQuizData.length;
+    if(answered < total){
+      if(!confirm(`아직 ${total - answered}개 문제에 응답하지 않았습니다.\n그래도 제출하시겠습니까?`)) return;
+    }
+    // 점수 계산 (응답한 문제 * 배점 시뮬레이션)
+    let score = 0, maxScore = 0;
+    activeQuizData.forEach((q, i) => {
+      maxScore += q.score;
+      if(quizState.answers[i] !== null) score += q.score;
+    });
+    showResultPage(score, maxScore, answered, total);
+  }
+
+  // 재응시하기
+  document.getElementById('qrRetryBtn').addEventListener('click', () => {
+    document.getElementById('quizResultPage').classList.remove('active');
+    document.getElementById('quizView').classList.add('active'); // quiz-view 복원
+    document.getElementById('quizTabSingle').style.display = '';
+    document.getElementById('quizTabAll').style.display    = '';
+    document.getElementById('quizSingleView').style.display = '';
+    document.getElementById('quizAllView').style.display    = 'none';
+    document.getElementById('quizTabSingle').classList.add('active');
+    document.getElementById('quizTabAll').classList.remove('active');
+    initQuiz(_lastQuizMode);
+  });
+
+  // 목차로 돌아가기
+  document.getElementById('qrBackBtn').addEventListener('click', () => {
+    document.getElementById('quizResultPage').classList.remove('active');
+    document.getElementById('quizView').classList.remove('active');
+    // 첫 번째 강의로 이동
+    loadLesson(0);
+  });
 
   /* ── 재생/일시정지 ── */
   function togglePlay(){
@@ -7474,6 +8781,155 @@ document.querySelectorAll('a, button').forEach(el => {
 
 
 // ══════════════════════════════════════════
+//  찜과정 일괄 수강신청 (page-enroll-wish)
+// ══════════════════════════════════════════
+(function(){
+  const MEMBER = { name:'김법무', phone:'010-3333-4444', addr:'(06236) 서울특별시 강남구 테헤란로 152', addrDetail:'강남파이낸스센터 24층' };
+  const payMethodMap = { card:'신용카드', vbank:'가상계좌', transfer:'실시간계좌이체' };
+  let _selectedItems = [];
+  let _rawTotal    = 0;
+  let _finalTotal  = 0;
+  let _discountAmt = 0;
+  let _couponName  = '';
+
+  /* 페이지 진입 */
+  window.showEnrollWish = function(items, rawTotal, finalTotal, discountAmt, couponName){
+    _selectedItems = items;
+    _rawTotal    = rawTotal;
+    _finalTotal  = finalTotal;
+    _discountAmt = discountAmt || 0;
+    _couponName  = couponName  || '';
+    hideAll();
+    document.getElementById('page-enroll-wish').style.display = 'block';
+    document.getElementById('stickyCta').classList.remove('show');
+    window.scrollTo({ top: 0 });
+    populate();
+    setWishEnrollStep(1);
+  };
+
+  function setWishEnrollStep(n){
+    ['wishEnrollStep1','wishEnrollStep2','wishEnrollStep3'].forEach((id,i)=>{
+      document.getElementById(id).className = 'estep'+(i+1<n?' done':i+1===n?' on':'');
+    });
+  }
+
+  function populate(){
+    /* 과정 목록 */
+    const list = document.getElementById('wishEnrollCourseList');
+    list.innerHTML = _selectedItems.map(it => `
+      <div class="wish-enroll-item">
+        <div class="wish-enroll-thumb ${it.thumbClass}" style="background:var(--tr-light-amber);">
+          <i class="${it.iconClass}" style="color:var(--tr-dark-amber);"></i>
+        </div>
+        <div class="wish-enroll-info">
+          <div class="wish-enroll-cat">${it.cat}</div>
+          <div class="wish-enroll-title">${it.name}</div>
+          <div class="wish-enroll-period">${it.period}</div>
+        </div>
+        <div class="wish-enroll-price">${it.price.toLocaleString('ko-KR')}<span style="font-size:12px;font-weight:400;">원</span></div>
+      </div>`).join('');
+    document.getElementById('wishEnrollTotalAmt').textContent = _finalTotal.toLocaleString('ko-KR');
+
+    /* 회원정보 자동 입력 */
+    document.getElementById('wishEnrollName').value  = MEMBER.name;
+    document.getElementById('wishEnrollPhone').value = MEMBER.phone;
+    document.getElementById('wishEnrollEmail').value = '';
+    document.getElementById('wishAddrView').value        = MEMBER.addr;
+    document.getElementById('wishAddrDetailView').value  = MEMBER.addrDetail;
+    document.getElementById('wishNewAddr').value         = '';
+    document.getElementById('wishNewAddrDetail').value   = '';
+    document.getElementById('wishAddrDefault').checked   = true;
+    document.getElementById('wishAddrNewWrap').classList.remove('show');
+    document.getElementById('wishAddrDefaultWrap').style.display = 'block';
+
+    /* 결제방법 초기화 */
+    document.querySelectorAll('#wishPayMethodGroup .pay-method-card').forEach(c => c.classList.remove('selected'));
+    document.querySelector('#wishPayMethodGroup .pay-method-card').classList.add('selected');
+    showWishPayDetail('card');
+
+    /* 요약 패널 */
+    const discEl  = document.getElementById('wishSumDiscount');
+    const discRow = document.getElementById('wishSumDiscountRow');
+    document.getElementById('wishSumCount').textContent = _selectedItems.length + '개';
+    document.getElementById('wishSumPrice').textContent = _rawTotal.toLocaleString('ko-KR') + '원';
+    if(_discountAmt > 0){
+      discEl.textContent  = '- ' + _discountAmt.toLocaleString('ko-KR') + '원' + (_couponName ? ' (' + _couponName + ')' : '');
+      discRow.style.display = '';
+    } else {
+      discRow.style.display = 'none';
+    }
+    document.getElementById('wishSumTotal').textContent = _finalTotal.toLocaleString('ko-KR');
+  }
+
+  /* 배송지 토글 */
+  window.toggleWishAddr = function(val){
+    document.getElementById('wishAddrDefaultWrap').style.display = val==='default' ? 'block' : 'none';
+    const nw = document.getElementById('wishAddrNewWrap');
+    val==='new' ? nw.classList.add('show') : nw.classList.remove('show');
+  };
+
+  /* 새 주소 검색 */
+  window.searchWishAddr = function(){
+    const q = prompt('[주소 검색 시뮬레이션]\n도로명 또는 지번을 입력하세요.','테헤란로 152');
+    if(q===null) return;
+    document.getElementById('wishNewAddr').value = '(06236) 서울특별시 강남구 '+(q||'테헤란로 152');
+    document.getElementById('wishNewAddrDetail').focus();
+  };
+
+  /* 결제방법 선택 */
+  window.selectWishPayMethod = function(label){
+    document.querySelectorAll('#wishPayMethodGroup .pay-method-card').forEach(c=>c.classList.remove('selected'));
+    label.classList.add('selected');
+    const val = label.querySelector('input[type="radio"]').value;
+    showWishPayDetail(val);
+  };
+  function showWishPayDetail(val){
+    document.getElementById('wishPayCardDetail').style.display     = val==='card'     ? 'block' : 'none';
+    document.getElementById('wishPayVbankDetail').style.display    = val==='vbank'    ? 'block' : 'none';
+    document.getElementById('wishPayTransferDetail').style.display = val==='transfer' ? 'block' : 'none';
+  }
+
+  /* 결제하기 */
+  document.getElementById('wishEnrollPayBtn').addEventListener('click', function(){
+    const isNew = document.getElementById('wishAddrNew').checked;
+    if(isNew && !document.getElementById('wishNewAddr').value){
+      alert('배송지 주소를 검색해 주세요.'); return;
+    }
+
+    const selectedPay = document.querySelector('#wishPayMethodGroup .pay-method-card.selected input[type="radio"]');
+    const payVal   = selectedPay ? selectedPay.value : 'card';
+    const payLabel = payMethodMap[payVal] || '신용카드';
+
+    const addrMain   = isNew ? document.getElementById('wishNewAddr').value     : document.getElementById('wishAddrView').value;
+    const addrDetail = isNew ? document.getElementById('wishNewAddrDetail').value : document.getElementById('wishAddrDetailView').value;
+    const fullAddr   = addrMain + (addrDetail ? ' ' + addrDetail : '');
+    const memberName = document.getElementById('wishEnrollName').value || MEMBER.name;
+    const orderNum   = 'TR' + new Date().toISOString().replace(/[-T:.Z]/g,'').slice(0,14);
+    const courseNames = _selectedItems.map(it=>it.name.split(' — ')[0]).join(', ');
+
+    setWishEnrollStep(2);
+    setTimeout(()=>{
+      setWishEnrollStep(3);
+      /* 결제완료 페이지 세팅 (기존 page-complete 재활용) */
+      document.getElementById('completeTitle').innerHTML =
+        '<span class="name">'+memberName+'</span>님,<br>결제가 완료되었습니다! 🎉';
+      document.getElementById('completeSub').textContent =
+        _selectedItems.length+'개 과정의 수강신청이 완료되었습니다.\n지금 바로 나의 강의실에서 학습을 시작하세요.';
+      document.getElementById('completePayMethod').textContent = payLabel;
+      document.getElementById('completeAddr').textContent      = fullAddr;
+      document.getElementById('completeOrderNum').textContent  = orderNum;
+      /* 과정명 행 동적 업데이트 */
+      const courseRow = document.querySelector('#page-complete .complete-row:first-child .cv');
+      if(courseRow) courseRow.textContent = courseNames;
+      const methodRow = document.querySelector('#page-complete .complete-row:nth-child(2) .cv');
+      if(methodRow) methodRow.textContent = _selectedItems.length+'개 과정 · 온라인/집합 혼합';
+      showComplete();
+    }, 500);
+  });
+
+})();
+
+// ══════════════════════════════════════════
 //  수강신청 페이지 (page-enroll / page-complete)
 // ══════════════════════════════════════════
 (function(){
@@ -7490,12 +8946,8 @@ document.querySelectorAll('a, button').forEach(el => {
   });
 
   window.showEnroll = function(){
-    pageMain.style.display     = 'none';
-    pageDetail.style.display   = 'none';
-    pageList.style.display     = 'none';
-    pageMypage.style.display   = 'none';
+    hideAll();
     pageEnroll.style.display   = 'block';
-    pageComplete.style.display = 'none';
     document.getElementById('stickyCta').classList.remove('show');
     window.scrollTo({ top: 0 });
     populateEnrollForm();
@@ -7504,11 +8956,7 @@ document.querySelectorAll('a, button').forEach(el => {
   };
 
   window.showComplete = function(){
-    pageMain.style.display     = 'none';
-    pageDetail.style.display   = 'none';
-    pageList.style.display     = 'none';
-    pageMypage.style.display   = 'none';
-    pageEnroll.style.display   = 'none';
+    hideAll();
     pageComplete.style.display = 'block';
     document.getElementById('stickyCta').classList.remove('show');
     window.scrollTo({ top: 0 });
@@ -7543,20 +8991,11 @@ document.querySelectorAll('a, button').forEach(el => {
     document.getElementById('addrDefault').checked = true;
     document.getElementById('enrollAddrNewWrap').classList.remove('show');
     document.getElementById('enrollAddrDefault').style.display = 'block';
-    // 약관 초기화
-    document.getElementById('enrollAgreeAll').checked = false;
-    document.querySelectorAll('.enroll-chk').forEach(c => c.checked = false);
-    document.getElementById('enrollAgreeMsg').textContent = '';
     // 결제 방법 → 신용카드 초기화
     document.querySelectorAll('.pay-method-card').forEach(c => c.classList.remove('selected'));
     const firstCard = document.querySelector('.pay-method-card');
     if(firstCard) firstCard.classList.add('selected');
     showPayDetail('card');
-    // 카드 번호 초기화
-    ['payCardNum','payCardExp','payCardCvc'].forEach(id => {
-      const el = document.getElementById(id);
-      if(el) el.value = '';
-    });
   }
 
   /* ── 배송지 토글 ── */
@@ -7589,10 +9028,9 @@ document.querySelectorAll('a, button').forEach(el => {
   };
 
   function showPayDetail(val){
-    document.getElementById('payCardDetail').style.display     = (val === 'card')                         ? 'block' : 'none';
-    document.getElementById('payVbankDetail').style.display    = (val === 'vbank')                        ? 'block' : 'none';
-    document.getElementById('payTransferDetail').style.display = (val === 'transfer')                     ? 'block' : 'none';
-    document.getElementById('paySimpleDetail').style.display   = ['kakao','naver','company'].includes(val) ? 'block' : 'none';
+    document.getElementById('payCardDetail').style.display     = (val === 'card')     ? 'block' : 'none';
+    document.getElementById('payVbankDetail').style.display    = (val === 'vbank')    ? 'block' : 'none';
+    document.getElementById('payTransferDetail').style.display = (val === 'transfer') ? 'block' : 'none';
   }
 
   /* ── 카드번호 자동 하이픈 ── */
@@ -7606,28 +9044,10 @@ document.querySelectorAll('a, button').forEach(el => {
     el.value = v;
   };
 
-  /* ── 전체 동의 ── */
-  window.syncEnrollAgree = function(checked){
-    document.querySelectorAll('.enroll-chk').forEach(c => c.checked = checked);
-  };
-  document.querySelectorAll('.enroll-chk').forEach(c => {
-    c.addEventListener('change', () => {
-      const all = [...document.querySelectorAll('.enroll-chk')];
-      document.getElementById('enrollAgreeAll').checked = all.every(x => x.checked);
-    });
-  });
+
 
   /* ── 결제하기 버튼 ── */
   document.getElementById('enrollPayBtn').addEventListener('click', () => {
-    // 필수 약관 체크
-    const reqs = [...document.querySelectorAll('.enroll-chk[data-req="true"]')];
-    if(!reqs.every(c => c.checked)){
-      document.getElementById('enrollAgreeMsg').textContent = '필수 이용약관에 모두 동의해 주세요.';
-      document.getElementById('enrollAgreeMsg').scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
-    }
-    document.getElementById('enrollAgreeMsg').textContent = '';
-
     // 새주소 입력 시 주소 검색 여부 확인
     const isNew = document.getElementById('addrNew').checked;
     if(isNew && !document.getElementById('enrollNewAddr').value){
@@ -7637,22 +9057,11 @@ document.querySelectorAll('a, button').forEach(el => {
 
     // 선택된 결제수단
     const payMethodMap = {
-      card: '신용카드', vbank: '가상계좌', transfer: '실시간계좌이체',
-      kakao: '카카오페이', naver: '네이버페이', company: '법인카드/세금계산서'
+      card: '신용카드', vbank: '가상계좌', transfer: '실시간계좌이체'
     };
     const selectedCard = document.querySelector('.pay-method-card.selected input[type="radio"]');
-    const payVal  = selectedCard ? selectedCard.value : 'card';
+    const payVal   = selectedCard ? selectedCard.value : 'card';
     const payLabel = payMethodMap[payVal] || '신용카드';
-
-    // 카드 결제 시 번호 기본 체크
-    if(payVal === 'card'){
-      const cardNum = document.getElementById('payCardNum').value.replace(/\D/g,'');
-      if(cardNum.length < 16){ alert('카드번호 16자리를 정확히 입력해 주세요.'); return; }
-      const cardExp = document.getElementById('payCardExp').value.replace(/\D/g,'');
-      if(cardExp.length < 4){ alert('유효기간을 입력해 주세요.'); return; }
-      const cardCvc = document.getElementById('payCardCvc').value.replace(/\D/g,'');
-      if(cardCvc.length < 3){ alert('CVC 3자리를 입력해 주세요.'); return; }
-    }
 
     // 배송지
     const addrMain   = isNew ? document.getElementById('enrollNewAddr').value     : document.getElementById('enrollAddrView').value;
