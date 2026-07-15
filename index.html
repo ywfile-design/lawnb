@@ -1989,6 +1989,215 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
 }
 .withdraw-done-btn:hover { background: #0e2410; }
 
+/* ═══ 공지사항 / 이벤트 게시판 페이지 ═══ */
+#page-notice, #page-event {
+  display: none; min-height: 70vh; background: var(--gray-bg);
+}
+.board-wrap {
+  max-width: 1100px; margin: 0 auto; padding: 48px 32px 100px;
+}
+.board-crumb {
+  background: var(--tr-white); border-bottom: 1px solid var(--gray-line);
+}
+.board-crumb-inner {
+  max-width: 1100px; margin: 0 auto; padding: 12px 32px;
+  font-size: 12.5px; color: var(--gray-mid);
+  display: flex; align-items: center; gap: 8px;
+}
+.board-crumb-inner i { font-size: 9px; }
+.board-crumb-inner .cur { color: var(--tr-graphite); font-weight: 600; }
+.board-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 28px; flex-wrap: wrap; gap: 12px;
+}
+.board-head-title {
+  font-size: 24px; font-weight: 900; color: var(--tr-graphite);
+  display: flex; align-items: center; gap: 10px;
+}
+.board-head-title i { color: var(--tr-orange); font-size: 20px; }
+.board-head-total { font-size: 13px; color: var(--gray-mid); }
+.board-head-total b { color: var(--tr-orange); }
+/* 검색 */
+.board-search {
+  display: flex; gap: 8px; align-items: center;
+}
+.board-search input {
+  height: 40px; border: 1.5px solid var(--gray-line); border-radius: 7px;
+  padding: 0 14px; font-size: 13px; font-family: var(--sans);
+  outline: none; width: 220px; transition: border-color .2s;
+}
+.board-search input:focus { border-color: var(--tr-orange); }
+.board-search-btn {
+  height: 40px; padding: 0 16px; background: var(--tr-orange); color: #fff;
+  border-radius: 7px; font-size: 13px; font-weight: 700;
+  font-family: var(--sans); border: none; cursor: pointer;
+}
+/* 카테고리 탭 */
+.board-tabs {
+  display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.board-tab {
+  padding: 7px 18px; border-radius: 100px; font-size: 13px; font-weight: 600;
+  border: 1.5px solid var(--gray-line); background: #fff; color: var(--gray-mid);
+  cursor: pointer; font-family: var(--sans); transition: all .2s;
+}
+.board-tab.active {
+  background: var(--tr-orange); color: #fff; border-color: var(--tr-orange);
+}
+/* 테이블 */
+.board-table {
+  width: 100%; border-collapse: collapse;
+  background: var(--tr-white); border-radius: 10px; overflow: hidden;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+}
+.board-table thead tr {
+  background: var(--tr-graphite); color: #fff;
+}
+.board-table th {
+  padding: 14px 16px; font-size: 13px; font-weight: 700; text-align: center;
+}
+.board-table th:nth-child(2) { text-align: left; }
+.board-table td {
+  padding: 14px 16px; font-size: 13.5px; border-bottom: 1px solid var(--gray-line);
+  color: var(--tr-graphite); text-align: center; vertical-align: middle;
+}
+.board-table td:nth-child(2) { text-align: left; cursor: pointer; }
+.board-table td:nth-child(2):hover { color: var(--tr-orange); }
+.board-table tbody tr:last-child td { border-bottom: none; }
+.board-table tbody tr:hover { background: var(--tr-light-amber); }
+.board-tag {
+  display: inline-block; padding: 2px 9px; border-radius: 100px;
+  font-size: 11px; font-weight: 700; margin-right: 6px; vertical-align: middle;
+}
+.board-tag.notice   { background: var(--tr-light-teal);  color: #2e8871; }
+.board-tag.event    { background: var(--tr-light-amber); color: var(--tr-dark-amber); }
+.board-tag.new-tag  { background: #fdecea; color: #c0392b; }
+.board-tag.update   { background: var(--tr-light-sky);   color: var(--tr-dark-sky); }
+.board-new-dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  background: #c0392b; margin-left: 5px; vertical-align: middle;
+}
+.board-fix-icon { color: var(--tr-orange); font-size: 12px; }
+/* 페이지네이션 */
+.board-pagination {
+  display: flex; justify-content: center; gap: 6px; margin-top: 28px;
+}
+.board-pg-btn {
+  width: 36px; height: 36px; border-radius: 7px; border: 1.5px solid var(--gray-line);
+  background: #fff; font-size: 13px; font-weight: 600; color: var(--gray-mid);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-family: var(--sans); transition: all .2s;
+}
+.board-pg-btn.active { background: var(--tr-orange); color: #fff; border-color: var(--tr-orange); }
+.board-pg-btn:hover:not(.active) { border-color: var(--tr-orange); color: var(--tr-orange); }
+/* 이벤트 카드형 */
+.event-card-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 28px;
+}
+@media (max-width: 860px) { .event-card-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 540px) { .event-card-grid { grid-template-columns: 1fr; } }
+.event-bcard {
+  background: var(--tr-white); border-radius: 12px; overflow: hidden;
+  border: 1px solid var(--gray-line); box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: transform .2s, box-shadow .2s; cursor: pointer;
+}
+.event-bcard:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+.event-bcard-thumb {
+  height: 120px; display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+}
+.event-bcard-body { padding: 16px 18px; }
+.event-bcard-tag {
+  font-size: 11px; font-weight: 700; color: var(--tr-orange);
+  margin-bottom: 6px;
+}
+.event-bcard-title {
+  font-size: 14px; font-weight: 700; line-height: 1.5;
+  margin-bottom: 8px; color: var(--tr-graphite);
+}
+.event-bcard-period { font-size: 12px; color: var(--gray-mid); }
+.event-bcard-dday {
+  display: inline-block; margin-top: 8px;
+  padding: 3px 10px; border-radius: 100px;
+  font-size: 11.5px; font-weight: 700;
+  background: var(--tr-light-amber); color: var(--tr-orange);
+}
+
+/* ═══ FAQ 페이지 ═══ */
+#page-faq { display: none; min-height: 70vh; background: var(--gray-bg); }
+.faq-wrap { max-width: 860px; margin: 0 auto; padding: 48px 32px 100px; }
+.faq-head { margin-bottom: 32px; }
+.faq-head-title {
+  font-size: 24px; font-weight: 900; color: var(--tr-graphite);
+  display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+}
+.faq-head-title i { color: var(--tr-orange); }
+.faq-head-desc { font-size: 13.5px; color: var(--gray-mid); }
+
+/* 카테고리 탭 */
+.faq-cats {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px;
+}
+.faq-cat {
+  padding: 8px 20px; border-radius: 100px; font-size: 13px; font-weight: 600;
+  border: 1.5px solid var(--gray-line); background: #fff; color: var(--gray-mid);
+  cursor: pointer; font-family: var(--sans); transition: all .2s;
+}
+.faq-cat.active { background: var(--tr-orange); color: #fff; border-color: var(--tr-orange); }
+.faq-cat:hover:not(.active) { border-color: var(--tr-orange); color: var(--tr-orange); }
+
+/* 검색 */
+.faq-search {
+  display: flex; gap: 8px; margin-bottom: 28px;
+}
+.faq-search input {
+  flex: 1; height: 46px; border: 1.5px solid var(--gray-line); border-radius: 8px;
+  padding: 0 16px; font-size: 14px; font-family: var(--sans); outline: none;
+  transition: border-color .2s;
+}
+.faq-search input:focus { border-color: var(--tr-orange); }
+.faq-search-btn {
+  height: 46px; padding: 0 20px; background: var(--tr-orange); color: #fff;
+  border-radius: 8px; font-size: 14px; font-weight: 700;
+  font-family: var(--sans); border: none; cursor: pointer;
+}
+
+/* 아코디언 */
+.faq-list { display: flex; flex-direction: column; gap: 8px; }
+.faq-item {
+  background: #fff; border: 1px solid var(--gray-line); border-radius: 10px;
+  overflow: hidden; transition: box-shadow .2s;
+}
+.faq-item.open { box-shadow: 0 4px 16px rgba(214,64,0,0.1); border-color: var(--tr-orange); }
+.faq-q {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 22px; cursor: pointer; user-select: none;
+}
+.faq-q-badge {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  background: var(--tr-orange); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 900;
+}
+.faq-q-text { flex: 1; font-size: 14.5px; font-weight: 700; color: var(--tr-graphite); line-height: 1.5; }
+.faq-q-cat { font-size: 11.5px; color: var(--tr-orange); font-weight: 700; flex-shrink: 0; }
+.faq-q-arrow { color: var(--gray-mid); font-size: 13px; transition: transform .25s; flex-shrink: 0; }
+.faq-item.open .faq-q-arrow { transform: rotate(180deg); color: var(--tr-orange); }
+.faq-a {
+  display: none; padding: 0 22px 20px 64px;
+  font-size: 13.5px; color: var(--gray-mid); line-height: 1.85;
+  border-top: 1px solid var(--gray-line);
+}
+.faq-a.open { display: block; padding-top: 16px; }
+.faq-a b { color: var(--tr-graphite); }
+.faq-a a { color: var(--tr-orange); text-decoration: underline; }
+
+/* 빈 결과 */
+.faq-empty {
+  text-align: center; padding: 60px 0; color: var(--gray-mid); font-size: 14px;
+}
+.faq-empty i { font-size: 40px; display: block; margin-bottom: 14px; color: var(--gray-line); }
+
 /* 찜과정 */
 .wish-empty { text-align: center; padding: 60px 0; color: var(--gray-mid); font-size: 13.5px; }
 
@@ -2925,7 +3134,7 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
     <div class="util-sep"></div>
     <a href="#">나의 강의실</a>
     <div class="util-sep"></div>
-    <a href="#">고객센터</a>
+    <a href="#" onclick="showFaq();return false;">고객센터</a>
   </div>
 </div>
 
@@ -3041,8 +3250,8 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
         <div class="nav-has-sub">
           <a href="#notice" class="menu-event">공지/이벤트<i class="fas fa-chevron-down sub-caret"></i></a>
           <div class="sub-dropdown">
-            <a href="#notice">공지사항</a>
-            <a href="#">이벤트</a>
+            <a href="#" onclick="showNotice();return false;">공지사항</a>
+            <a href="#" onclick="showEvent();return false;">이벤트</a>
           </div>
         </div>
       </nav>
@@ -3293,7 +3502,7 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
               <span class="cprice-rate">30%</span>
               <span class="cprice-sale">590,000<span class="won">원</span></span>
             </div>
-            <div class="card-timer" data-deadline="2026-07-16T23:59:59"><i class="fas fa-clock"></i><span class="card-timer-val">--:--:--</span> 마감</div>
+            <div class="card-timer" data-deadline="2026-07-16T23:59:59"><i class="fas fa-clock"></i><span class="card-timer-val">--:--:--</span></div>
           </div>
         </div>
       </div>
@@ -3326,7 +3535,7 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
               <span class="cprice-rate">25%</span>
               <span class="cprice-sale">450,000<span class="won">원</span></span>
             </div>
-            <div class="card-timer" data-deadline="2026-07-20T23:59:59"><i class="fas fa-clock"></i><span class="card-timer-val">--:--:--</span> 마감</div>
+            <div class="card-timer" data-deadline="2026-07-20T23:59:59"><i class="fas fa-clock"></i><span class="card-timer-val">--:--:--</span></div>
           </div>
         </div>
       </div>
@@ -3359,7 +3568,7 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
               <span class="cprice-rate">20%</span>
               <span class="cprice-sale">680,000<span class="won">원</span></span>
             </div>
-            <div class="card-timer" data-deadline="2026-07-25T23:59:59"><i class="fas fa-clock"></i><span class="card-timer-val">--:--:--</span> 마감</div>
+            <div class="card-timer" data-deadline="2026-07-25T23:59:59"><i class="fas fa-clock"></i><span class="card-timer-val">--:--:--</span></div>
           </div>
         </div>
       </div>
@@ -3392,7 +3601,7 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
               <span class="cprice-rate">40%</span>
               <span class="cprice-sale">300,000<span class="won">원</span></span>
             </div>
-            <div class="card-timer" data-deadline="2026-07-31T23:59:59"><i class="fas fa-clock"></i><span class="card-timer-val">--:--:--</span> 마감</div>
+            <div class="card-timer" data-deadline="2026-07-31T23:59:59"><i class="fas fa-clock"></i><span class="card-timer-val">--:--:--</span></div>
           </div>
         </div>
       </div>
@@ -3555,7 +3764,12 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
           <i class="fas fa-scale-unbalanced"></i>
           <div class="card-icons">
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
-            <button class="icon-toggle bell on-bell" aria-label="개설 알림 신청" data-alarm-id="A001"><i class="fas fa-bell"></i></button>
+            <button class="icon-toggle bell" aria-label="개설 알림 신청" data-alarm-id="A001"><i class="fas fa-bell"></i></button>
+          </div>
+          <div class="hover-detail">
+            <div class="hd-row"><span class="k">공개예정</span>2026년 8월</div>
+            <div class="hd-row"><span class="k">학습유형</span>온라인 (예정)</div>
+            <div class="hd-row"><span class="k">카테고리</span>채권/도산법</div>
             <a href="#" class="hd-btn"><i class="fas fa-bell"></i> 개설 알림 신청</a>
           </div>
         </div>
@@ -3572,7 +3786,7 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
           <i class="fas fa-lightbulb"></i>
           <div class="card-icons">
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
-            <button class="icon-toggle bell on-bell" aria-label="개설 알림 신청" data-alarm-id="A002"><i class="fas fa-bell"></i></button>
+            <button class="icon-toggle bell" aria-label="개설 알림 신청" data-alarm-id="A002"><i class="fas fa-bell"></i></button>
           </div>
           <div class="hover-detail">
             <div class="hd-row"><span class="k">공개예정</span>2026년 8월</div>
@@ -3594,7 +3808,7 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
           <i class="fas fa-users"></i>
           <div class="card-icons">
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
-            <button class="icon-toggle bell on-bell" aria-label="개설 알림 신청" data-alarm-id="A003"><i class="fas fa-bell"></i></button>
+            <button class="icon-toggle bell" aria-label="개설 알림 신청" data-alarm-id="A003"><i class="fas fa-bell"></i></button>
           </div>
           <div class="hover-detail">
             <div class="hd-row"><span class="k">공개예정</span>2026년 9월</div>
@@ -3616,7 +3830,7 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
           <i class="fas fa-coins"></i>
           <div class="card-icons">
             <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
-            <button class="icon-toggle bell on-bell" aria-label="개설 알림 신청" data-alarm-id="A004"><i class="fas fa-bell"></i></button>
+            <button class="icon-toggle bell" aria-label="개설 알림 신청" data-alarm-id="A004"><i class="fas fa-bell"></i></button>
           </div>
           <div class="hover-detail">
             <div class="hd-row"><span class="k">공개예정</span>2026년 9월</div>
@@ -6158,6 +6372,221 @@ footer { background: var(--tr-green); padding: 34px 0; margin-top: 20px; }
 
 
 <!-- ═══════════════════════════════════════════
+     FAQ 페이지 (page-faq)
+═══════════════════════════════════════════ -->
+<div id="page-faq">
+  <div class="board-crumb">
+    <div class="board-crumb-inner">
+      <a href="#" onclick="showMain();return false;">홈</a>
+      <i class="fas fa-chevron-right"></i>
+      <span class="cur">고객센터 · FAQ</span>
+    </div>
+  </div>
+  <div class="faq-wrap">
+    <div class="faq-head">
+      <div class="faq-head-title"><i class="fas fa-circle-question"></i> 자주 묻는 질문 (FAQ)</div>
+      <p class="faq-head-desc">궁금하신 사항을 빠르게 찾아보세요. 해결되지 않으면 하단 1:1 문의를 이용해 주세요.</p>
+    </div>
+    <div class="faq-search">
+      <input type="text" id="faqSearchInput" placeholder="검색어를 입력하세요 (예: 환불, 수료증, 결제)" />
+      <button class="faq-search-btn" onclick="filterFaq()"><i class="fas fa-magnifying-glass"></i> 검색</button>
+    </div>
+    <div class="faq-cats" id="faqCats">
+      <button class="faq-cat active" data-cat="전체" onclick="selectFaqCat(this)">전체</button>
+      <button class="faq-cat" data-cat="수강신청" onclick="selectFaqCat(this)">수강신청</button>
+      <button class="faq-cat" data-cat="결제/환불" onclick="selectFaqCat(this)">결제/환불</button>
+      <button class="faq-cat" data-cat="학습/이용" onclick="selectFaqCat(this)">학습/이용</button>
+      <button class="faq-cat" data-cat="수료증" onclick="selectFaqCat(this)">수료증</button>
+      <button class="faq-cat" data-cat="회원" onclick="selectFaqCat(this)">회원</button>
+      <button class="faq-cat" data-cat="기업/단체" onclick="selectFaqCat(this)">기업/단체</button>
+    </div>
+    <div class="faq-list" id="faqList"></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     공지사항 게시판 (page-notice)
+═══════════════════════════════════════════ -->
+<div id="page-notice">
+  <div class="board-crumb">
+    <div class="board-crumb-inner">
+      <a href="#" onclick="showMain();return false;">홈</a>
+      <i class="fas fa-chevron-right"></i>
+      <span class="cur">공지사항</span>
+    </div>
+  </div>
+  <div class="board-wrap">
+    <div class="board-head">
+      <div class="board-head-title">
+        <i class="fas fa-bullhorn"></i> 공지사항
+        <span class="board-head-total">총 <b>24</b>건</span>
+      </div>
+      <div class="board-search">
+        <input type="text" placeholder="검색어를 입력하세요" id="noticeSearchInput" />
+        <button class="board-search-btn"><i class="fas fa-magnifying-glass"></i></button>
+      </div>
+    </div>
+    <table class="board-table">
+      <thead>
+        <tr>
+          <th style="width:70px;">번호</th>
+          <th>제목</th>
+          <th style="width:110px;">작성일</th>
+          <th style="width:80px;">조회</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><i class="fas fa-thumbtack board-fix-icon"></i></td>
+          <td>톰슨로이터 교육센터 서비스 이용약관 개정 안내 (2026.07.01 시행)<span class="board-new-dot"></span></td>
+          <td>2026.07.01</td><td>1,284</td>
+        </tr>
+        <tr>
+          <td><i class="fas fa-thumbtack board-fix-icon"></i></td>
+          <td>개인정보처리방침 개정 안내</td>
+          <td>2026.06.15</td><td>892</td>
+        </tr>
+        <tr>
+          <td>24</td>
+          <td>미국변호사시험 온라인 설명회 신청 오픈 (7/15 저녁 8시)<span class="board-new-dot"></span></td>
+          <td>2026.06.27</td><td>743</td>
+        </tr>
+        <tr>
+          <td>23</td>
+          <td>단체수강(5인 이상) 신청 시 수강료 15% 할인 이벤트</td>
+          <td>2026.06.12</td><td>1,102</td>
+        </tr>
+        <tr>
+          <td>22</td>
+          <td>학습 플레이어 UX 개선 업데이트 안내</td>
+          <td>2026.06.05</td><td>521</td>
+        </tr>
+        <tr>
+          <td>21</td>
+          <td>2026년 하반기 오프라인 교육 일정 안내</td>
+          <td>2026.05.28</td><td>1,876</td>
+        </tr>
+        <tr>
+          <td>20</td>
+          <td>ESG 공시 집중과정 얼리버드 할인 (~6/30)</td>
+          <td>2026.05.20</td><td>634</td>
+        </tr>
+        <tr>
+          <td>19</td>
+          <td>수료증 발급 시스템 개편 안내</td>
+          <td>2026.05.10</td><td>448</td>
+        </tr>
+        <tr>
+          <td>18</td>
+          <td>모바일 앱 v3.2 업데이트 — 다크모드 지원</td>
+          <td>2026.04.22</td><td>387</td>
+        </tr>
+        <tr>
+          <td>17</td>
+          <td>법무팀 리더십 과정 신규 개설 안내</td>
+          <td>2026.04.15</td><td>712</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="board-pagination">
+      <button class="board-pg-btn"><i class="fas fa-chevron-left"></i></button>
+      <button class="board-pg-btn active">1</button>
+      <button class="board-pg-btn">2</button>
+      <button class="board-pg-btn">3</button>
+      <button class="board-pg-btn"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     이벤트 게시판 (page-event)
+═══════════════════════════════════════════ -->
+<div id="page-event">
+  <div class="board-crumb">
+    <div class="board-crumb-inner">
+      <a href="#" onclick="showMain();return false;">홈</a>
+      <i class="fas fa-chevron-right"></i>
+      <span class="cur">이벤트</span>
+    </div>
+  </div>
+  <div class="board-wrap">
+    <div class="board-head">
+      <div class="board-head-title">
+        <i class="fas fa-gift"></i> 이벤트
+        <span class="board-head-total">진행중 <b>4</b>건 · 종료 <b>12</b>건</span>
+      </div>
+      <div class="board-search">
+        <input type="text" placeholder="이벤트 검색" id="eventSearchInput" />
+        <button class="board-search-btn"><i class="fas fa-magnifying-glass"></i></button>
+      </div>
+    </div>
+    <table class="board-table">
+      <thead>
+        <tr>
+          <th style="width:70px;">번호</th>
+          <th>제목</th>
+          <th style="width:140px;">이벤트 기간</th>
+          <th style="width:110px;">상태</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><i class="fas fa-thumbtack board-fix-icon"></i></td>
+          <td>영문계약 심화과정 여름 특별 할인 30% OFF<span class="board-new-dot"></span></td>
+          <td>2026.07.01 ~ 07.16</td>
+          <td><span class="board-tag notice">진행중</span></td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>중대재해처벌법 대응 실무 과정 20% 할인<span class="board-new-dot"></span></td>
+          <td>2026.07.05 ~ 07.20</td>
+          <td><span class="board-tag notice">진행중</span></td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>ESG 공시·실사 집중과정 얼리버드 15% 할인<span class="board-new-dot"></span></td>
+          <td>2026.07.10 ~ 07.25</td>
+          <td><span class="board-tag notice">진행중</span></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>5인 이상 단체 수강 시 수강료 15% 추가 할인<span class="board-new-dot"></span></td>
+          <td>2026.06.12 ~ 07.31</td>
+          <td><span class="board-tag notice">진행중</span></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>미국변호사시험 온라인 설명회 이벤트</td>
+          <td>2026.06.01 ~ 06.30</td>
+          <td><span class="board-tag" style="background:var(--gray-bg);color:var(--gray-mid);">종료</span></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>법무 리더 양성 과정 수강 후기 이벤트</td>
+          <td>2026.05.01 ~ 05.31</td>
+          <td><span class="board-tag" style="background:var(--gray-bg);color:var(--gray-mid);">종료</span></td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2026 상반기 신규 과정 론칭 기념 할인</td>
+          <td>2026.01.02 ~ 01.31</td>
+          <td><span class="board-tag" style="background:var(--gray-bg);color:var(--gray-mid);">종료</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="board-pagination">
+      <button class="board-pg-btn"><i class="fas fa-chevron-left"></i></button>
+      <button class="board-pg-btn active">1</button>
+      <button class="board-pg-btn">2</button>
+      <button class="board-pg-btn"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
      로그인 모달
 ═══════════════════════════════════════════ -->
 <div class="auth-overlay" id="loginModal">
@@ -6411,6 +6840,23 @@ document.querySelectorAll('.icon-toggle').forEach(btn => {
       const wasOn = btn.classList.contains('on-bell');
       btn.classList.toggle('on-bell');
 
+      // hd-btn 동기화 헬퍼
+      const hdBtn = card ? card.querySelector('.hd-btn') : null;
+      function syncHdBtn(isOn){
+        if(!hdBtn) return;
+        if(isOn){
+          hdBtn.innerHTML = '<i class="fas fa-bell-slash"></i> 개설 알림 해제';
+          hdBtn.style.background   = 'var(--tr-light-amber)';
+          hdBtn.style.color        = 'var(--tr-orange)';
+          hdBtn.style.borderColor  = 'var(--tr-orange)';
+        } else {
+          hdBtn.innerHTML = '<i class="fas fa-bell"></i> 개설 알림 신청';
+          hdBtn.style.background   = '';
+          hdBtn.style.color        = '';
+          hdBtn.style.borderColor  = '';
+        }
+      }
+
       if (!wasOn) {
         // 알림 등록 — title 기준으로 id 생성
         const newId = 'A' + Date.now().toString().slice(-5);
@@ -6422,13 +6868,46 @@ document.querySelectorAll('.icon-toggle').forEach(btn => {
             regDate: new Date().toLocaleDateString('ko-KR').replace(/\. /g,'.').replace(/\.$/,''),
             thumb, icon: iconCls, iconColor, on: true };
         }
+        syncHdBtn(true);
+        alert('과정개설 알림이 신청되었습니다.');
       } else {
         // 알림 해제 — 해당 title 과정 off 처리
         const found = Object.values(ALARM_COURSES).find(a => a.title === title);
         if (found) { found.on = false; delete ALARM_COURSES[found.id]; }
+        syncHdBtn(false);
+        alert('과정개설 알림이 해지되었습니다.');
       }
     }
   });
+});
+
+// ── 개설예정 카드 hover-detail 내 알림 버튼 클릭 처리
+document.addEventListener('click', function(e) {
+  const hdBtn = e.target.closest('.sec-upcoming .hd-btn');
+  if (!hdBtn) return;
+  e.preventDefault();
+  const card = hdBtn.closest('.ccard');
+  if (!card) return;
+  const bellBtn = card.querySelector('.icon-toggle.bell');
+  const wasOn = bellBtn ? bellBtn.classList.contains('on-bell') : false;
+
+  if (bellBtn) bellBtn.classList.toggle('on-bell');
+
+  if (!wasOn) {
+    // 신청 → 해제 버튼으로 변경
+    hdBtn.innerHTML = '<i class="fas fa-bell-slash"></i> 개설 알림 해제';
+    hdBtn.style.background = 'var(--tr-light-amber)';
+    hdBtn.style.color = 'var(--tr-orange)';
+    hdBtn.style.borderColor = 'var(--tr-orange)';
+    alert('과정개설 알림이 신청되었습니다.');
+  } else {
+    // 해제 → 신청 버튼으로 복원
+    hdBtn.innerHTML = '<i class="fas fa-bell"></i> 개설 알림 신청';
+    hdBtn.style.background = '';
+    hdBtn.style.color = '';
+    hdBtn.style.borderColor = '';
+    alert('과정개설 알림이 해지되었습니다.');
+  }
 });
 
 // ── 필터 탭 액티브
@@ -6494,6 +6973,9 @@ const pageEnrollWishEl    = document.getElementById('page-enroll-wish');
 const pageWithdrawPwEl    = document.getElementById('page-withdraw-pw');
 const pageWithdrawCfEl    = document.getElementById('page-withdraw-confirm');
 const pageWithdrawDnEl    = document.getElementById('page-withdraw-done');
+const pageFaqEl           = document.getElementById('page-faq');
+const pageNoticeEl        = document.getElementById('page-notice');
+const pageEventEl         = document.getElementById('page-event');
 function hideAll(){
   pageMain.style.display          = 'none';
   pageDetail.style.display        = 'none';
@@ -6505,6 +6987,25 @@ function hideAll(){
   if(pageWithdrawPwEl) pageWithdrawPwEl.style.display = 'none';
   if(pageWithdrawCfEl) pageWithdrawCfEl.style.display = 'none';
   if(pageWithdrawDnEl) pageWithdrawDnEl.style.display = 'none';
+  if(pageFaqEl)        pageFaqEl.style.display        = 'none';
+  if(pageNoticeEl)     pageNoticeEl.style.display     = 'none';
+  if(pageEventEl)      pageEventEl.style.display      = 'none';
+}
+function showFaq(){
+  hideAll();
+  pageFaqEl.style.display = 'block';
+  window.scrollTo({ top: 0 });
+  renderFaq('전체');
+}
+function showNotice(){
+  hideAll();
+  pageNoticeEl.style.display = 'block';
+  window.scrollTo({ top: 0 });
+}
+function showEvent(){
+  hideAll();
+  pageEventEl.style.display = 'block';
+  window.scrollTo({ top: 0 });
 }
 function showMain(){
   hideAll(); pageMain.style.display = 'block';
@@ -6522,7 +7023,7 @@ const UPCOMING_CARDS_HTML = `
       <i class="fas fa-scale-unbalanced"></i>
       <div class="card-icons">
         <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
-        <button class="icon-toggle bell on-bell" aria-label="개설 알림 신청"><i class="fas fa-bell"></i></button>
+        <button class="icon-toggle bell" aria-label="개설 알림 신청"><i class="fas fa-bell"></i></button>
       </div>
       <div class="hover-detail">
         <div class="hd-row"><span class="k">공개예정</span>2026년 8월</div>
@@ -6542,7 +7043,7 @@ const UPCOMING_CARDS_HTML = `
       <i class="fas fa-lightbulb"></i>
       <div class="card-icons">
         <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
-        <button class="icon-toggle bell on-bell" aria-label="개설 알림 신청"><i class="fas fa-bell"></i></button>
+        <button class="icon-toggle bell" aria-label="개설 알림 신청"><i class="fas fa-bell"></i></button>
       </div>
       <div class="hover-detail">
         <div class="hd-row"><span class="k">공개예정</span>2026년 8월</div>
@@ -6562,7 +7063,7 @@ const UPCOMING_CARDS_HTML = `
       <i class="fas fa-users"></i>
       <div class="card-icons">
         <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
-        <button class="icon-toggle bell on-bell" aria-label="개설 알림 신청"><i class="fas fa-bell"></i></button>
+        <button class="icon-toggle bell" aria-label="개설 알림 신청"><i class="fas fa-bell"></i></button>
       </div>
       <div class="hover-detail">
         <div class="hd-row"><span class="k">공개예정</span>2026년 9월</div>
@@ -6582,7 +7083,7 @@ const UPCOMING_CARDS_HTML = `
       <i class="fas fa-coins"></i>
       <div class="card-icons">
         <button class="icon-toggle heart" aria-label="관심과정 등록"><i class="fas fa-heart"></i></button>
-        <button class="icon-toggle bell on-bell" aria-label="개설 알림 신청"><i class="fas fa-bell"></i></button>
+        <button class="icon-toggle bell" aria-label="개설 알림 신청"><i class="fas fa-bell"></i></button>
       </div>
       <div class="hover-detail">
         <div class="hd-row"><span class="k">공개예정</span>2026년 9월</div>
@@ -6620,7 +7121,7 @@ const EVENT_CARDS_HTML = `
       <div class="cfoot" style="flex-direction:column;align-items:flex-start;gap:3px;">
         <span class="cprice-original">840,000원</span>
         <div class="cprice-discount"><span class="cprice-rate">30%</span><span class="cprice-sale">590,000<span class="won">원</span></span></div>
-        <div class="card-timer" data-deadline="2026-07-16T23:59:59"><i class="fas fa-clock"></i><span class="card-timer-val">--:--:--</span> 마감</div>
+        <div class="card-timer" data-deadline="2026-07-16T23:59:59"><i class="fas fa-clock"></i><span class="card-timer-val">--:--:--</span></div>
       </div>
     </div>
   </div>
@@ -6643,7 +7144,7 @@ const EVENT_CARDS_HTML = `
       <div class="cfoot" style="flex-direction:column;align-items:flex-start;gap:3px;">
         <span class="cprice-original">600,000원</span>
         <div class="cprice-discount"><span class="cprice-rate">25%</span><span class="cprice-sale">450,000<span class="won">원</span></span></div>
-        <div class="card-timer" data-deadline="2026-07-20T23:59:59"><i class="fas fa-clock"></i><span class="card-timer-val">--:--:--</span> 마감</div>
+        <div class="card-timer" data-deadline="2026-07-20T23:59:59"><i class="fas fa-clock"></i><span class="card-timer-val">--:--:--</span></div>
       </div>
     </div>
   </div>
@@ -6666,7 +7167,7 @@ const EVENT_CARDS_HTML = `
       <div class="cfoot" style="flex-direction:column;align-items:flex-start;gap:3px;">
         <span class="cprice-original">850,000원</span>
         <div class="cprice-discount"><span class="cprice-rate">20%</span><span class="cprice-sale">680,000<span class="won">원</span></span></div>
-        <div class="card-timer" data-deadline="2026-07-25T23:59:59"><i class="fas fa-clock"></i><span class="card-timer-val">--:--:--</span> 마감</div>
+        <div class="card-timer" data-deadline="2026-07-25T23:59:59"><i class="fas fa-clock"></i><span class="card-timer-val">--:--:--</span></div>
       </div>
     </div>
   </div>
@@ -6689,7 +7190,7 @@ const EVENT_CARDS_HTML = `
       <div class="cfoot" style="flex-direction:column;align-items:flex-start;gap:3px;">
         <span class="cprice-original">500,000원</span>
         <div class="cprice-discount"><span class="cprice-rate">40%</span><span class="cprice-sale">300,000<span class="won">원</span></span></div>
-        <div class="card-timer" data-deadline="2026-07-31T23:59:59"><i class="fas fa-clock"></i><span class="card-timer-val">--:--:--</span> 마감</div>
+        <div class="card-timer" data-deadline="2026-07-31T23:59:59"><i class="fas fa-clock"></i><span class="card-timer-val">--:--:--</span></div>
       </div>
     </div>
   </div>
@@ -7278,7 +7779,7 @@ document.getElementById('emailDirect').addEventListener('change', function(){
       '<span style="color:var(--tr-dark-gold);font-weight:700;"><i class="fas fa-circle-user"></i> ' + name + '님</span>'
       + '<div class="util-sep"></div><a href="#" id="utilLogout">로그아웃</a>'
       + '<div class="util-sep"></div><a href="#">나의 강의실</a>'
-      + '<div class="util-sep"></div><a href="#">고객센터</a>';
+      + '<div class="util-sep"></div><a href="#" onclick="showFaq();return false;">고객센터</a>';
     document.getElementById('utilLogout').addEventListener('click', e => {
       e.preventDefault(); location.reload();
     });
@@ -7360,6 +7861,101 @@ document.getElementById('mpInfoSave').addEventListener('click', () => {
   if(!name){ alert('이름을 입력해 주세요.'); return; }
   if(!addr){ alert('주소를 검색해 주세요.'); return; }
   alert('✅ 회원정보가 저장되었습니다.\n\n이름: ' + name);
+});
+
+// ══ FAQ 데이터 및 렌더 ══
+const FAQ_DATA = [
+  { cat:'수강신청', q:'수강신청은 어떻게 하나요?', a:'원하시는 과정 페이지에서 <b>수강신청 버튼</b>을 클릭하시면 됩니다. 비로그인 상태라면 로그인 후 신청이 가능하며, 결제 완료 즉시 수강이 시작됩니다.' },
+  { cat:'수강신청', q:'수강기간은 언제부터 시작되나요?', a:'결제 완료 시점부터 수강기간이 시작됩니다. 온라인 과정은 <b>결제일로부터 과정에 표시된 수강기간</b>(30일/45일/60일/90일) 동안 이용 가능합니다.' },
+  { cat:'수강신청', q:'수강 신청 후 취소할 수 있나요?', a:'수강 시작(최초 학습 이력 발생) 전까지는 전액 환불이 가능합니다. 수강 시작 후에는 환불 규정에 따라 부분 환불이 가능합니다. 자세한 내용은 고객센터(<b>1544-0000</b>)로 문의해 주세요.' },
+  { cat:'수강신청', q:'오프라인 강의는 어떻게 신청하나요?', a:'오프라인(집합교육) 과정도 동일하게 과정 페이지에서 수강신청 후 결제하시면 됩니다. 교육 장소 및 준비물 안내는 신청 완료 후 이메일로 발송됩니다.' },
+  { cat:'결제/환불', q:'결제 수단은 어떤 것들이 있나요?', a:'신용카드, 가상계좌, 실시간계좌이체를 지원합니다. 법인카드·세금계산서 발행이 필요하신 경우 고객센터로 별도 문의 주시기 바랍니다.' },
+  { cat:'결제/환불', q:'환불 규정이 어떻게 되나요?', a:'수강 시작 전: <b>전액 환불</b> / 수강기간 1/3 경과 전: <b>2/3 환불</b> / 수강기간 1/2 경과 전: <b>1/2 환불</b> / 수강기간 1/2 경과 후: <b>환불 불가</b>. 오프라인 과정은 교육 시작 7일 전까지 전액 환불 가능합니다.' },
+  { cat:'결제/환불', q:'세금계산서 발급이 가능한가요?', a:'법인 회원의 경우 세금계산서 발급이 가능합니다. 결제 완료 후 고객센터(<b>1544-0000</b>) 또는 1:1 문의를 통해 사업자등록증을 첨부하여 요청해 주세요.' },
+  { cat:'결제/환불', q:'결제 영수증은 어디서 확인하나요?', a:'나의 강의실 → 학습현황에서 결제 내역 및 영수증을 확인하고 출력하실 수 있습니다.' },
+  { cat:'학습/이용', q:'강의를 다시 반복해서 볼 수 있나요?', a:'수강기간 내에는 <b>횟수 제한 없이</b> 반복 수강이 가능합니다. 수강기간이 만료된 이후에는 재수강 신청을 통해 이용하실 수 있습니다.' },
+  { cat:'학습/이용', q:'모바일에서도 수강할 수 있나요?', a:'네, 스마트폰·태블릿 등 모바일 기기에서도 수강 가능합니다. 별도 앱 없이 <b>모바일 브라우저(Chrome 권장)</b>에서 바로 학습하실 수 있습니다.' },
+  { cat:'학습/이용', q:'강의 교재는 어떻게 받을 수 있나요?', a:'전자교재는 학습 플레이어 내 <b>학습자료 버튼</b>을 클릭하여 PDF로 다운로드하실 수 있습니다. 실물 교재가 제공되는 과정은 수강신청 시 배송지를 입력하시면 배송됩니다.' },
+  { cat:'학습/이용', q:'학습 진도는 어떻게 계산되나요?', a:'각 차시를 <b>전체 시간의 80% 이상</b> 수강하면 해당 차시가 완료 처리됩니다. 전체 차시의 80% 이상 완료 시 수료 기준을 충족합니다.' },
+  { cat:'수료증', q:'수료증은 어디서 발급받나요?', a:'수료 기준(수강률 80% 이상)을 충족하시면 나의 강의실 → 학습현황에서 <b>수료증 다운로드</b> 버튼이 활성화됩니다. PDF 형태로 즉시 출력 가능합니다.' },
+  { cat:'수료증', q:'수료증에 발급 날짜를 변경할 수 있나요?', a:'수료증의 발급일은 수료 기준 달성일을 기준으로 자동 생성되며, 임의로 변경하실 수 없습니다.' },
+  { cat:'수료증', q:'회사 로고가 들어간 수료증을 발급받을 수 있나요?', a:'기업/단체 수강 계약을 통해 교육하신 경우에 한해 법인명이 기재된 수료증 발급이 가능합니다. 자세한 내용은 고객센터로 문의해 주세요.' },
+  { cat:'회원', q:'비밀번호를 잊어버렸어요.', a:'로그인 화면에서 <b>비밀번호 찾기</b>를 클릭하시면 가입 시 등록하신 이메일 또는 휴대폰으로 임시 비밀번호가 발송됩니다.' },
+  { cat:'회원', q:'회원탈퇴 후 재가입이 가능한가요?', a:'회원 탈퇴 후에는 동일 아이디로 <b>재가입이 불가</b>합니다. 탈퇴 시 학습 이력, 결제 내역, 수료증 등 모든 데이터가 영구 삭제되므로 신중하게 결정해 주세요.' },
+  { cat:'회원', q:'아이디(이메일)를 변경하고 싶어요.', a:'현재 아이디(이메일) 변경은 고객센터를 통해서만 처리 가능합니다. 고객센터(<b>1544-0000</b>)로 문의해 주시기 바랍니다.' },
+  { cat:'기업/단체', q:'단체 수강 할인이 있나요?', a:'5인 이상 단체 수강 시 <b>수강료 15% 추가 할인</b>이 적용됩니다. 10인 이상의 경우 별도 협의가 가능하오니 기업교육 담당자(edu@thomsonreuters.co.kr)로 문의해 주세요.' },
+  { cat:'기업/단체', q:'기업 맞춤형 교육 과정을 요청할 수 있나요?', a:'네, 법무팀·컴플라이언스팀 대상 맞춤형 사내 강의 및 커리큘럼 설계가 가능합니다. 기업교육 문의 폼을 작성해 주시면 담당자가 연락드립니다.' },
+];
+
+let _faqCat = '전체';
+
+function renderFaq(cat){
+  _faqCat = cat;
+  const keyword = (document.getElementById('faqSearchInput')?.value || '').trim().toLowerCase();
+  const list = document.getElementById('faqList');
+  const items = FAQ_DATA.filter(d =>
+    (cat === '전체' || d.cat === cat) &&
+    (!keyword || d.q.toLowerCase().includes(keyword) || d.a.replace(/<[^>]+>/g,'').toLowerCase().includes(keyword))
+  );
+  if(items.length === 0){
+    list.innerHTML = '<div class="faq-empty"><i class="fas fa-magnifying-glass"></i>검색 결과가 없습니다.</div>';
+    return;
+  }
+  list.innerHTML = items.map((d, i) => `
+    <div class="faq-item" data-idx="${i}">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span class="faq-q-badge">Q</span>
+        <span class="faq-q-text">${d.q}</span>
+        <span class="faq-q-cat">${d.cat}</span>
+        <i class="fas fa-chevron-down faq-q-arrow"></i>
+      </div>
+      <div class="faq-a">${d.a}</div>
+    </div>`).join('');
+}
+
+function toggleFaq(qEl){
+  const item = qEl.closest('.faq-item');
+  const ans  = item.querySelector('.faq-a');
+  const isOpen = item.classList.contains('open');
+  // 모두 닫기
+  document.querySelectorAll('#faqList .faq-item.open').forEach(el => {
+    el.classList.remove('open');
+    el.querySelector('.faq-a').classList.remove('open');
+  });
+  if(!isOpen){
+    item.classList.add('open');
+    ans.classList.add('open');
+  }
+}
+
+function selectFaqCat(btn){
+  document.querySelectorAll('.faq-cat').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('faqSearchInput').value = '';
+  renderFaq(btn.dataset.cat);
+}
+
+function filterFaq(){
+  renderFaq(_faqCat);
+}
+
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Enter' && document.activeElement?.id === 'faqSearchInput') filterFaq();
+});
+
+// ══ 게시판 탭 인터랙션 ══
+document.querySelectorAll('#page-notice .board-tab, #page-event .board-tab').forEach(btn => {
+  btn.addEventListener('click', function(){
+    this.closest('.board-tabs').querySelectorAll('.board-tab').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+document.querySelectorAll('.board-pagination .board-pg-btn').forEach(btn => {
+  btn.addEventListener('click', function(){
+    if(this.querySelector('i')) return;
+    this.closest('.board-pagination').querySelectorAll('.board-pg-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+  });
 });
 
 // ══ 회원탈퇴 기능 ══
@@ -7485,22 +8081,20 @@ document.querySelectorAll('.gnb-menu nav .nav-has-sub > a, .gnb-menu nav > a').f
 
 // ══ 이벤트 과정 카드별 마감 타이머 ══
 (function(){
-  function fmt(n){ return String(n).padStart(2,'0'); }
-  function tick(){
-    document.querySelectorAll('.card-timer').forEach(el => {
-      const deadline = new Date(el.dataset.deadline);
-      const diff = deadline - Date.now();
-      const valEl = el.querySelector('.card-timer-val');
-      if(!valEl) return;
-      if(diff <= 0){ valEl.textContent = '마감'; el.style.background='var(--gray-bg)'; el.style.color='var(--gray-mid)'; return; }
-      const d = Math.floor(diff/86400000);
-      const h = Math.floor((diff%86400000)/3600000);
-      const m = Math.floor((diff%3600000)/60000);
-      const s = Math.floor((diff%60000)/1000);
-      valEl.textContent = d > 0 ? `${d}일 ${fmt(h)}:${fmt(m)}:${fmt(s)}` : `${fmt(h)}:${fmt(m)}:${fmt(s)}`;
-    });
-  }
-  tick(); setInterval(tick, 1000);
+  document.querySelectorAll('.card-timer').forEach(el => {
+    const deadline = new Date(el.dataset.deadline);
+    const diff = deadline - Date.now();
+    const valEl = el.querySelector('.card-timer-val');
+    if(!valEl) return;
+    if(diff <= 0){
+      valEl.textContent = '마감';
+      el.style.background = 'var(--gray-bg)';
+      el.style.color = 'var(--gray-mid)';
+      return;
+    }
+    const d = Math.floor(diff / 86400000);
+    valEl.textContent = d > 0 ? `종료까지 ${d}일 남음` : '오늘 마감';
+  });
 })();
 
 
